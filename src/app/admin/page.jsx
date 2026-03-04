@@ -2,6 +2,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
 
+// === GitHub API設定 ===
+const GITHUB_REPO = 'hinakira-bot/ai-news-aggregator-';
+const CONFIG_PATH = 'public/data/site-config.json';
+
 const DEFAULT_MENU_ITEM = { id: '', label: '', url: '', highlight: false, external: true };
 
 const SECTION_TYPES = [
@@ -20,6 +24,39 @@ const DEFAULT_SECTIONS = {
 
 function generateId() {
   return Math.random().toString(36).substring(2, 8);
+}
+
+// ===== GitHub API ヘルパー =====
+async function githubGet(token) {
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`, {
+    headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' },
+  });
+  if (!res.ok) throw new Error(`GitHub GET failed: ${res.status}`);
+  const data = await res.json();
+  const content = JSON.parse(atob(data.content));
+  return { content, sha: data.sha };
+}
+
+async function githubPut(token, config, sha) {
+  const body = JSON.stringify(config, null, 2);
+  const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      message: 'update: サイト設定を管理画面から更新',
+      content: btoa(unescape(encodeURIComponent(body))),
+      sha,
+    }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || `GitHub PUT failed: ${res.status}`);
+  }
+  return await res.json();
 }
 
 // ===== ヘッダーメニュー編集 =====
@@ -53,7 +90,7 @@ function HeaderEditor({ menuItems, onChange }) {
         </button>
       </div>
       {menuItems.length === 0 && (
-        <p className="text-xs text-gray-400 text-center py-4">メニュー項目がありません</p>
+        <p className="text-xs text-gray-400 text-center py-4">メニュー項目がありません。「+追加」で追加してください。</p>
       )}
       {menuItems.map((item, i) => (
         <div key={item.id || i} className="bg-gray-50 rounded-xl p-4 space-y-3 border border-gray-200">
@@ -74,42 +111,20 @@ function HeaderEditor({ menuItems, onChange }) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="text-[11px] text-gray-500 mb-1 block">ラベル</label>
-              <input
-                type="text"
-                value={item.label}
-                onChange={(e) => updateItem(i, 'label', e.target.value)}
-                className="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                placeholder="メルマガ登録"
-              />
+              <input type="text" value={item.label} onChange={(e) => updateItem(i, 'label', e.target.value)} className="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="メルマガ登録" />
             </div>
             <div>
               <label className="text-[11px] text-gray-500 mb-1 block">URL</label>
-              <input
-                type="text"
-                value={item.url}
-                onChange={(e) => updateItem(i, 'url', e.target.value)}
-                className="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                placeholder="https://..."
-              />
+              <input type="text" value={item.url} onChange={(e) => updateItem(i, 'url', e.target.value)} className="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="https://..." />
             </div>
           </div>
           <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={item.highlight}
-                onChange={(e) => updateItem(i, 'highlight', e.target.checked)}
-                className="rounded border-gray-300"
-              />
+              <input type="checkbox" checked={item.highlight} onChange={(e) => updateItem(i, 'highlight', e.target.checked)} className="rounded border-gray-300" />
               ハイライト表示
             </label>
             <label className="flex items-center gap-2 text-xs text-gray-600 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={item.external}
-                onChange={(e) => updateItem(i, 'external', e.target.checked)}
-                className="rounded border-gray-300"
-              />
+              <input type="checkbox" checked={item.external} onChange={(e) => updateItem(i, 'external', e.target.checked)} className="rounded border-gray-300" />
               外部リンク
             </label>
           </div>
@@ -145,17 +160,12 @@ function NewsletterEditor({ section, onChange }) {
 
 function LinksEditor({ section, onChange }) {
   const items = section.items || [];
-  const addLink = () => {
-    onChange({ ...section, items: [...items, { label: '', url: '', description: '', badge: '' }] });
-  };
-  const removeLink = (index) => {
-    onChange({ ...section, items: items.filter((_, i) => i !== index) });
-  };
+  const addLink = () => onChange({ ...section, items: [...items, { label: '', url: '', description: '', badge: '' }] });
+  const removeLink = (index) => onChange({ ...section, items: items.filter((_, i) => i !== index) });
   const updateLink = (index, field, value) => {
     const updated = items.map((item, i) => i === index ? { ...item, [field]: value } : item);
     onChange({ ...section, items: updated });
   };
-
   return (
     <div className="space-y-3">
       <div>
@@ -170,9 +180,7 @@ function LinksEditor({ section, onChange }) {
         <div key={i} className="bg-white rounded-lg p-3 space-y-2 border border-gray-100">
           <div className="flex justify-between items-center">
             <span className="text-[10px] text-gray-400">リンク {i + 1}</span>
-            <button onClick={() => removeLink(i)} className="text-red-400 hover:text-red-600">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
+            <button onClick={() => removeLink(i)} className="text-red-400 hover:text-red-600"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
           </div>
           <input type="text" value={item.label} onChange={(e) => updateLink(i, 'label', e.target.value)} className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="ラベル" />
           <input type="text" value={item.url} onChange={(e) => updateLink(i, 'url', e.target.value)} className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:ring-2 focus:ring-blue-500 outline-none" placeholder="URL" />
@@ -188,17 +196,12 @@ function LinksEditor({ section, onChange }) {
 
 function SNSEditor({ section, onChange }) {
   const accounts = section.accounts || [];
-  const addAccount = () => {
-    onChange({ ...section, accounts: [...accounts, { platform: 'twitter', url: '', label: '' }] });
-  };
-  const removeAccount = (index) => {
-    onChange({ ...section, accounts: accounts.filter((_, i) => i !== index) });
-  };
+  const addAccount = () => onChange({ ...section, accounts: [...accounts, { platform: 'twitter', url: '', label: '' }] });
+  const removeAccount = (index) => onChange({ ...section, accounts: accounts.filter((_, i) => i !== index) });
   const updateAccount = (index, field, value) => {
     const updated = accounts.map((item, i) => i === index ? { ...item, [field]: value } : item);
     onChange({ ...section, accounts: updated });
   };
-
   return (
     <div className="space-y-3">
       <div>
@@ -213,9 +216,7 @@ function SNSEditor({ section, onChange }) {
         <div key={i} className="bg-white rounded-lg p-3 space-y-2 border border-gray-100">
           <div className="flex justify-between items-center">
             <span className="text-[10px] text-gray-400">SNS {i + 1}</span>
-            <button onClick={() => removeAccount(i)} className="text-red-400 hover:text-red-600">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-            </button>
+            <button onClick={() => removeAccount(i)} className="text-red-400 hover:text-red-600"><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
           </div>
           <select value={acc.platform} onChange={(e) => updateAccount(i, 'platform', e.target.value)} className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:ring-2 focus:ring-blue-500 outline-none bg-white">
             <option value="twitter">X (Twitter)</option>
@@ -251,20 +252,13 @@ function SidebarEditor({ sections, onChange }) {
     const template = { ...DEFAULT_SECTIONS[type], id: generateId(), order: sections.length + 1 };
     onChange([...sections, template]);
   };
-  const removeSection = (index) => {
-    onChange(sections.filter((_, i) => i !== index));
-  };
-  const updateSection = (index, updated) => {
-    onChange(sections.map((s, i) => i === index ? updated : s));
-  };
-  const toggleEnabled = (index) => {
-    updateSection(index, { ...sections[index], enabled: !sections[index].enabled });
-  };
+  const removeSection = (index) => onChange(sections.filter((_, i) => i !== index));
+  const updateSection = (index, updated) => onChange(sections.map((s, i) => i === index ? updated : s));
+  const toggleEnabled = (index) => updateSection(index, { ...sections[index], enabled: !sections[index].enabled });
   const moveSection = (index, direction) => {
     const newSections = [...sections];
     const target = index + direction;
     if (target < 0 || target >= newSections.length) return;
-    // swap order values too
     const tempOrder = newSections[index].order;
     newSections[index] = { ...newSections[index], order: newSections[target].order };
     newSections[target] = { ...newSections[target], order: tempOrder };
@@ -279,30 +273,20 @@ function SidebarEditor({ sections, onChange }) {
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold text-gray-700">サイドバー セクション</h3>
         <div className="relative group">
-          <button className="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            + 追加
-          </button>
+          <button className="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">+ 追加</button>
           <div className="absolute right-0 top-full mt-1 bg-white shadow-lg rounded-lg border border-gray-200 py-1 hidden group-hover:block z-10 min-w-[160px]">
             {SECTION_TYPES.map(t => (
-              <button key={t.value} onClick={() => addSection(t.value)} className="block w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 transition-colors">
-                {t.label}
-              </button>
+              <button key={t.value} onClick={() => addSection(t.value)} className="block w-full text-left px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 transition-colors">{t.label}</button>
             ))}
           </div>
         </div>
       </div>
-
-      {sortedSections.length === 0 && (
-        <p className="text-xs text-gray-400 text-center py-4">セクションがありません</p>
-      )}
-
+      {sortedSections.length === 0 && <p className="text-xs text-gray-400 text-center py-4">セクションがありません</p>}
       {sortedSections.map((section, i) => {
         const typeLabel = SECTION_TYPES.find(t => t.value === section.type)?.label || section.type;
         const originalIndex = sections.indexOf(section);
-
         return (
           <div key={section.id || i} className={`rounded-xl border ${section.enabled ? 'bg-gray-50 border-gray-200' : 'bg-gray-100 border-gray-200 opacity-60'}`}>
-            {/* セクションヘッダー */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <div className="flex items-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
@@ -310,21 +294,13 @@ function SidebarEditor({ sections, onChange }) {
                   <div className="w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:bg-blue-600 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all"></div>
                 </label>
                 <span className="text-xs font-medium text-gray-600">{typeLabel}</span>
-                <span className="text-[10px] text-gray-400">({section.id})</span>
               </div>
               <div className="flex items-center gap-1">
-                <button onClick={() => moveSection(originalIndex, -1)} disabled={i === 0} className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" /></svg>
-                </button>
-                <button onClick={() => moveSection(originalIndex, 1)} disabled={i === sortedSections.length - 1} className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                </button>
-                <button onClick={() => removeSection(originalIndex)} className="p-1 text-red-400 hover:text-red-600 ml-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                </button>
+                <button onClick={() => moveSection(originalIndex, -1)} disabled={i === 0} className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" /></svg></button>
+                <button onClick={() => moveSection(originalIndex, 1)} disabled={i === sortedSections.length - 1} className="p-1 text-gray-400 hover:text-gray-600 disabled:opacity-30"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg></button>
+                <button onClick={() => removeSection(originalIndex)} className="p-1 text-red-400 hover:text-red-600 ml-1"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
               </div>
             </div>
-            {/* セクション編集エリア */}
             {section.enabled && (
               <div className="p-4">
                 {section.type === 'newsletter' && <NewsletterEditor section={section} onChange={(s) => updateSection(originalIndex, s)} />}
@@ -340,22 +316,83 @@ function SidebarEditor({ sections, onChange }) {
   );
 }
 
+// ===== トークン設定画面 =====
+function TokenSetup({ onSave }) {
+  const [token, setToken] = useState('');
+  return (
+    <div className="max-w-lg mx-auto py-12">
+      <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
+        <h1 className="text-lg font-bold text-gray-900 mb-2">管理画面セットアップ</h1>
+        <p className="text-sm text-gray-500 mb-6">GitHubのPersonal Access Tokenを設定すると、この画面から直接設定を保存できます。</p>
+
+        <div className="bg-blue-50 rounded-xl p-4 mb-6 border border-blue-200">
+          <p className="text-xs text-blue-800 leading-relaxed">
+            <strong>トークンの取得方法:</strong><br />
+            GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token<br />
+            権限: <code className="bg-blue-100 px-1 rounded">Contents: Read and write</code>（リポジトリ: ai-news-aggregator-）
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">GitHub Personal Access Token</label>
+            <input
+              type="password"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              className="w-full text-sm px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="github_pat_..."
+            />
+          </div>
+          <button
+            onClick={() => { if (token.trim()) onSave(token.trim()); }}
+            disabled={!token.trim()}
+            className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            設定して管理画面に進む
+          </button>
+        </div>
+        <p className="text-[11px] text-gray-400 mt-4 text-center">トークンはこのブラウザのlocalStorageにのみ保存されます</p>
+      </div>
+    </div>
+  );
+}
+
 // ===== メインページ =====
 export default function AdminPage() {
+  const [token, setToken] = useState(null);
   const [config, setConfig] = useState(null);
+  const [sha, setSha] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(null); // 'success' | 'error' | null
+  const [errorMsg, setErrorMsg] = useState('');
   const [activeTab, setActiveTab] = useState('header');
-  const [saved, setSaved] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
+  // トークン読み込み
   useEffect(() => {
-    fetch('/ai-news/data/site-config.json')
-      .then(r => r.json())
-      .then(data => {
-        setConfig(data);
+    const saved = localStorage.getItem('hinakira_admin_token');
+    if (saved) {
+      setToken(saved);
+    } else {
+      setLoading(false);
+    }
+  }, []);
+
+  // 設定読み込み（GitHub APIから）
+  useEffect(() => {
+    if (!token) return;
+    setLoading(true);
+    githubGet(token)
+      .then(({ content, sha }) => {
+        setConfig(content);
+        setSha(sha);
         setLoading(false);
       })
-      .catch(() => {
-        // デフォルト設定
+      .catch((e) => {
+        console.error('Failed to load config:', e);
+        // トークンが無効かも → フォールバック
         setConfig({
           version: 1,
           header: { menuItems: [] },
@@ -363,25 +400,53 @@ export default function AdminPage() {
           updatedAt: null,
         });
         setLoading(false);
+        setErrorMsg('GitHubから設定を読み込めませんでした。トークンを確認してください。');
       });
+  }, [token]);
+
+  const handleTokenSave = (newToken) => {
+    localStorage.setItem('hinakira_admin_token', newToken);
+    setToken(newToken);
+  };
+
+  const handleSave = useCallback(async () => {
+    if (!config || !token || !sha) return;
+    setSaving(true);
+    setSaveStatus(null);
+    setErrorMsg('');
+
+    try {
+      const exportData = { ...config, updatedAt: new Date().toISOString() };
+      const result = await githubPut(token, exportData, sha);
+      setSha(result.content.sha);
+      setSaveStatus('success');
+      setHasChanges(false);
+      setTimeout(() => setSaveStatus(null), 4000);
+    } catch (e) {
+      console.error('Save failed:', e);
+      setSaveStatus('error');
+      setErrorMsg(e.message);
+    } finally {
+      setSaving(false);
+    }
+  }, [config, token, sha]);
+
+  const updateConfig = useCallback((newConfig) => {
+    setConfig(newConfig);
+    setHasChanges(true);
   }, []);
 
-  const handleDownload = useCallback(() => {
-    if (!config) return;
-    const exportData = {
-      ...config,
-      updatedAt: new Date().toISOString(),
-    };
-    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'site-config.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
-  }, [config]);
+  const handleLogout = () => {
+    localStorage.removeItem('hinakira_admin_token');
+    setToken(null);
+    setConfig(null);
+    setSha(null);
+  };
+
+  // トークン未設定
+  if (!token && !loading) {
+    return <TokenSetup onSave={handleTokenSave} />;
+  }
 
   if (loading) {
     return (
@@ -401,44 +466,62 @@ export default function AdminPage() {
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
               サイト設定
             </h1>
-            <p className="text-xs text-gray-400 mt-1">ヘッダーメニューとサイドバーの設定を編集します</p>
+            <p className="text-xs text-gray-400 mt-1">ヘッダーメニューとサイドバーの設定を編集・保存</p>
           </div>
-          <button
-            onClick={handleDownload}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-              saved
-                ? 'bg-green-100 text-green-700'
-                : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-sm hover:shadow'
-            }`}
-          >
-            {saved ? '保存しました' : 'JSONダウンロード'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={handleLogout} className="text-[11px] text-gray-400 hover:text-gray-600 transition-colors">ログアウト</button>
+            <button
+              onClick={handleSave}
+              disabled={saving || !hasChanges}
+              className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                saveStatus === 'success'
+                  ? 'bg-green-500 text-white'
+                  : saveStatus === 'error'
+                  ? 'bg-red-500 text-white'
+                  : hasChanges
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 shadow-sm hover:shadow animate-pulse'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              {saving ? (
+                <span className="flex items-center gap-2">
+                  <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                  保存中...
+                </span>
+              ) : saveStatus === 'success' ? (
+                '保存完了!'
+              ) : saveStatus === 'error' ? (
+                '保存失敗'
+              ) : (
+                '保存してデプロイ'
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* 保存方法の説明 */}
-      <div className="bg-amber-50 rounded-xl p-4 mb-6 border border-amber-200">
-        <p className="text-xs text-amber-800 leading-relaxed">
-          <strong>保存手順:</strong> 「JSONダウンロード」→ ダウンロードしたファイルを <code className="bg-amber-100 px-1 rounded">public/data/site-config.json</code> に置き換え → git commit & push → 自動リビルド・デプロイ
-        </p>
-      </div>
+      {/* エラーメッセージ */}
+      {errorMsg && (
+        <div className="bg-red-50 rounded-xl p-4 mb-6 border border-red-200">
+          <p className="text-xs text-red-700">{errorMsg}</p>
+        </div>
+      )}
+
+      {/* 保存成功メッセージ */}
+      {saveStatus === 'success' && (
+        <div className="bg-green-50 rounded-xl p-4 mb-6 border border-green-200">
+          <p className="text-xs text-green-700">
+            GitHubに保存しました。自動でリビルド・デプロイが開始されます（約5分で反映）
+          </p>
+        </div>
+      )}
 
       {/* タブ切替 */}
       <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-6">
-        <button
-          onClick={() => setActiveTab('header')}
-          className={`flex-1 py-2 text-xs font-medium rounded-lg transition-colors ${
-            activeTab === 'header' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
+        <button onClick={() => setActiveTab('header')} className={`flex-1 py-2 text-xs font-medium rounded-lg transition-colors ${activeTab === 'header' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
           ヘッダーメニュー
         </button>
-        <button
-          onClick={() => setActiveTab('sidebar')}
-          className={`flex-1 py-2 text-xs font-medium rounded-lg transition-colors ${
-            activeTab === 'sidebar' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
+        <button onClick={() => setActiveTab('sidebar')} className={`flex-1 py-2 text-xs font-medium rounded-lg transition-colors ${activeTab === 'sidebar' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
           サイドバー
         </button>
       </div>
@@ -448,13 +531,13 @@ export default function AdminPage() {
         {activeTab === 'header' && (
           <HeaderEditor
             menuItems={config.header?.menuItems || []}
-            onChange={(items) => setConfig({ ...config, header: { ...config.header, menuItems: items } })}
+            onChange={(items) => updateConfig({ ...config, header: { ...config.header, menuItems: items } })}
           />
         )}
         {activeTab === 'sidebar' && (
           <SidebarEditor
             sections={config.sidebar?.sections || []}
-            onChange={(sections) => setConfig({ ...config, sidebar: { ...config.sidebar, sections } })}
+            onChange={(sections) => updateConfig({ ...config, sidebar: { ...config.sidebar, sections } })}
           />
         )}
       </div>
