@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hinakira.com/ai-news/sitemap.xml
+
+# 管理ページはクロール不要
+Disallow: /ai-news/admin/

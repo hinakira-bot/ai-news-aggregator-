@@ -63,3 +63,8 @@ jobs:
           local-dir: ./out/
           server-dir: /hinakira/ai-news/
           dangerous-clean-slate: false
+
+      - name: Notify search engines (sitemap ping + IndexNow)
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: node scripts/ping-search-engines.mjs

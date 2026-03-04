@@ -98,7 +98,56 @@ async function main() {
     JSON.stringify(allArticleIds)
   );
 
-  console.log(`=== Generated: ${dateList.length} date files, ${totalArticles} article files, index.json, all-ids.json ===`);
+  // sitemap.xml 生成
+  const SITE_URL = 'https://hinakira.com/ai-news';
+  const today = new Date().toISOString().split('T')[0];
+  let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url>
+    <loc>${SITE_URL}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+`;
+
+  for (const articleId of allArticleIds) {
+    try {
+      const articleData = JSON.parse(
+        fs.readFileSync(path.join(ARTICLES_DIR, `${articleId}.json`), 'utf-8')
+      );
+      const pubDate = articleData.published_at
+        ? new Date(articleData.published_at).toISOString().split('T')[0]
+        : today;
+      sitemap += `  <url>
+    <loc>${SITE_URL}/articles/${articleId}/</loc>
+    <lastmod>${pubDate}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>${articleData.published_at || today}</news:publication_date>
+      <news:title>${(articleData.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')}</news:title>
+    </news:news>
+  </url>
+`;
+    } catch (e) {
+      // スキップ
+    }
+  }
+
+  sitemap += `</urlset>`;
+
+  // out/ ディレクトリが存在する場合はそこにも出力（ビルド後用）
+  const publicDir = path.join(process.cwd(), 'public');
+  fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemap);
+  console.log(`  sitemap.xml: ${allArticleIds.length + 1} URLs`);
+
+  console.log(`=== Generated: ${dateList.length} date files, ${totalArticles} article files, index.json, all-ids.json, sitemap.xml ===`);
 }
 
 main().catch(err => {

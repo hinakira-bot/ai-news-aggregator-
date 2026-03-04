@@ -372,14 +372,18 @@ export default async function ArticlePage({ params }) {
         {/* ⑤ 著者プロフィール */}
         <div className="mt-6 bg-white rounded-2xl shadow-sm p-6 sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-lg">H</span>
-            </div>
+            <img
+              src="/ai-news/images/profile.png"
+              alt="ヒナキラ"
+              width={56}
+              height={56}
+              className="w-14 h-14 rounded-full object-cover flex-shrink-0"
+            />
             <div className="flex-1 min-w-0">
               <h3 className="text-base font-bold text-gray-900 mb-1">ヒナキラ</h3>
               <p className="text-xs text-gray-400 mb-2">Hinakira AI News 編集長</p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                AIツール・LLM・プロンプト活用術を中心に、個人クリエイター・副業者向けのAI最新情報を毎日お届けしています。実際に使って試した知見をもとに、読者が「自分ごと」として活用できる考察を心がけています。
+                AIツール・LLM・プロンプト活用術を中心に、個人クリエイター・副業者向けのAI最新情報を毎日お届けしています。AI歴3年以上、いろんな用途に実際に使って試してきた知見をもとに、読者が「自分ごと」として活用できる考察を心がけています。
               </p>
             </div>
           </div>
