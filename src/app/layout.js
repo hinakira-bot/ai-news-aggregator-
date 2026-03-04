@@ -36,26 +36,26 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ja">
-      <body className={`${geistSans.variable} antialiased bg-gray-100 min-h-screen`}>
-        <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
-          <div className="max-w-[1000px] mx-auto px-4 py-2.5 flex items-center justify-between">
-            <a href="/ai-news/" className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+      <body className={`${geistSans.variable} antialiased bg-gray-50 min-h-screen`}>
+        <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 shadow-sm">
+          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <a href="/ai-news/" className="flex items-center gap-3 group">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow transition-shadow">
                 <span className="text-white font-bold text-sm">AI</span>
               </div>
               <div>
-                <h1 className="text-base font-bold text-gray-900 leading-tight">Hinakira AI News</h1>
+                <h1 className="text-base font-bold text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">Hinakira AI News</h1>
                 <p className="text-[10px] text-gray-400 leading-tight">個人向けAI最新情報まとめ</p>
               </div>
             </a>
           </div>
         </header>
-        <main className="max-w-[1000px] mx-auto px-4 py-5">
+        <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6">
           {children}
         </main>
-        <footer className="border-t border-gray-200 bg-white mt-8">
-          <div className="max-w-[1000px] mx-auto px-4 py-3 text-center text-xs text-gray-400">
-            Hinakira AI News - 毎朝自動更新
+        <footer className="border-t border-gray-200/80 bg-white mt-8">
+          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 text-center text-xs text-gray-400">
+            <p>Hinakira AI News - 個人向けAI最新情報を毎日自動収集</p>
           </div>
         </footer>
       </body>

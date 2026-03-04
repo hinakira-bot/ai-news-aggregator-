@@ -108,18 +108,25 @@ export default function ArticlesView({ initialData }) {
       <div className="flex-1 min-w-0">
         {loading ? (
           <div className="text-center py-20 text-gray-400">
-            <div className="animate-pulse text-lg">Loading...</div>
+            <div className="animate-pulse text-lg">読み込み中...</div>
           </div>
         ) : articles.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
-            <p className="text-lg mb-1">No articles</p>
+            <p className="text-lg mb-1">記事がありません</p>
             <p className="text-sm">
-              {currentDate ? `${currentDate} has no articles.` : 'No data yet.'}
+              {currentDate ? `${currentDate} の記事はまだありません。` : 'データがありません。'}
             </p>
           </div>
         ) : (
           <>
-            <div className="space-y-3">
+            {/* 件数表示 */}
+            {totalPages > 1 && (
+              <div className="text-xs text-gray-400 mb-3 px-1">
+                {startIndex + 1}〜{Math.min(startIndex + ARTICLES_PER_PAGE, articles.length)}件 / 全{articles.length}件
+              </div>
+            )}
+
+            <div className="space-y-2.5">
               {paginatedArticles.map(a => (
                 <ArticleCard key={a.id} article={a} />
               ))}
@@ -127,11 +134,11 @@ export default function ArticlesView({ initialData }) {
 
             {/* ページネーション */}
             {totalPages > 1 && (
-              <nav className="flex items-center justify-center gap-1 mt-8 mb-4">
+              <nav className="flex items-center justify-center gap-1.5 mt-8 mb-4">
                 <button
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium"
                 >
                   ← 前へ
                 </button>
@@ -140,9 +147,9 @@ export default function ArticlesView({ initialData }) {
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`w-10 h-10 text-sm rounded-lg border transition-colors ${
+                    className={`w-10 h-10 text-sm rounded-xl border transition-colors font-medium ${
                       page === currentPage
-                        ? 'bg-blue-600 text-white border-blue-600 font-bold'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                         : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                     }`}
                   >
@@ -153,7 +160,7 @@ export default function ArticlesView({ initialData }) {
                 <button
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors font-medium"
                 >
                   次へ →
                 </button>

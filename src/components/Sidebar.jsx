@@ -38,29 +38,34 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="w-full lg:w-56 flex-shrink-0 space-y-4">
+    <aside className="w-full lg:w-60 flex-shrink-0 space-y-3">
       {/* 検索 */}
-      <div className="bg-white rounded-lg shadow-sm p-3">
-        <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Search</h2>
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5">Search</h2>
         <form onSubmit={handleSearchSubmit}>
-          <input
-            name="search"
-            type="text"
-            defaultValue={searchQuery || ''}
-            placeholder="キーワード検索..."
-            className="w-full px-2.5 py-1.5 rounded border border-gray-200 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          />
+          <div className="relative">
+            <input
+              name="search"
+              type="text"
+              defaultValue={searchQuery || ''}
+              placeholder="キーワード検索..."
+              className="w-full pl-3 pr-9 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-colors"
+            />
+            <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </button>
+          </div>
         </form>
       </div>
 
       {/* 日付選択 */}
       {availableDates && availableDates.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm p-3">
-          <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Date</h2>
+        <div className="bg-white rounded-xl shadow-sm p-4">
+          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5">Date</h2>
           <select
             value={currentDate || ''}
             onChange={(e) => onDateChange(e.target.value)}
-            className="w-full px-2.5 py-1.5 rounded border border-gray-200 text-sm"
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 bg-white transition-colors"
           >
             {availableDates.map(d => {
               const dateStr = typeof d.date === 'string' ? d.date.split('T')[0] : new Date(d.date).toISOString().split('T')[0];
@@ -75,18 +80,18 @@ export default function Sidebar({
       )}
 
       {/* カテゴリ */}
-      <div className="bg-white rounded-lg shadow-sm p-3">
-        <h2 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Categories</h2>
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5">Categories</h2>
         <ul className="space-y-0.5">
           <li>
             <button
               onClick={() => onSelectCategory(null)}
-              className={`w-full text-left px-2.5 py-1.5 rounded text-sm flex items-center justify-between transition-colors ${
-                !selectedCategory ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-50'
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between transition-colors ${
+                !selectedCategory ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
-              <span>📋 All</span>
-              <span className="text-xs text-gray-400">{totalCount}</span>
+              <span>📋 すべて</span>
+              <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">{totalCount}</span>
             </button>
           </li>
           {CATEGORIES.map(cat => {
@@ -95,17 +100,17 @@ export default function Sidebar({
               <li key={cat.slug}>
                 <button
                   onClick={() => onSelectCategory(selectedCategory === cat.slug ? null : cat.slug)}
-                  className={`w-full text-left px-2.5 py-1.5 rounded text-sm flex items-center justify-between transition-colors ${
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between transition-colors ${
                     selectedCategory === cat.slug
-                      ? 'bg-blue-50 text-blue-700 font-medium'
+                      ? 'bg-blue-50 text-blue-700 font-semibold'
                       : count > 0
                         ? 'text-gray-600 hover:bg-gray-50'
-                        : 'text-gray-300'
+                        : 'text-gray-300 cursor-not-allowed'
                   }`}
                   disabled={count === 0}
                 >
-                  <span>{CATEGORY_ICONS[cat.slug] || '📄'} {cat.label}</span>
-                  {count > 0 && <span className="text-xs text-gray-400">{count}</span>}
+                  <span className="truncate">{CATEGORY_ICONS[cat.slug] || '📄'} {cat.label}</span>
+                  {count > 0 && <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded ml-1">{count}</span>}
                 </button>
               </li>
             );
@@ -114,9 +119,9 @@ export default function Sidebar({
       </div>
 
       {/* 統計 */}
-      <div className="bg-white rounded-lg shadow-sm p-3 text-center">
-        <div className="text-2xl font-bold text-gray-800">{total}</div>
-        <div className="text-[10px] text-gray-400 uppercase">articles today</div>
+      <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-sm p-4 text-center">
+        <div className="text-3xl font-bold text-white">{total}</div>
+        <div className="text-[11px] text-blue-200 uppercase tracking-wide mt-0.5">articles</div>
       </div>
     </aside>
   );
