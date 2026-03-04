@@ -310,7 +310,7 @@ export default async function ArticlePage({ params }) {
               <section>
                 <div className="flex items-center gap-2 mb-3">
                   <div className={`w-1 h-5 rounded-full`} style={{background: 'linear-gradient(to bottom, #3b82f6, #8b5cf6)'}}></div>
-                  <h2 className="text-base font-bold text-gray-700">ヒナキラの考察</h2>
+                  <h2 className="text-base font-bold text-gray-700">当サイトの考察</h2>
                 </div>
                 <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
                   <div className="absolute top-4 left-4 text-blue-200 text-4xl leading-none font-serif">&ldquo;</div>
