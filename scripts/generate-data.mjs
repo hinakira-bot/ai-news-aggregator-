@@ -46,11 +46,27 @@ async function main() {
       JSON.stringify(dateData)
     );
 
-    // 個別記事JSONファイル出力
+    // 個別記事JSONファイル出力（関連記事を含む）
     for (const article of result.articles) {
+      // 同じカテゴリの他記事から最大5件を関連記事に
+      const related = result.articles
+        .filter(a => a.id !== article.id && a.category === article.category)
+        .slice(0, 5)
+        .map(a => ({ id: a.id, title: a.title, category: a.category, source_name: a.source_name, published_at: a.published_at }));
+
+      // 同カテゴリが足りない場合、他の日付の同カテゴリ記事で補完はしない（静的生成の制約）
+      // 代わりに同日の他カテゴリ記事を追加
+      if (related.length < 3) {
+        const others = result.articles
+          .filter(a => a.id !== article.id && a.category !== article.category)
+          .slice(0, 5 - related.length)
+          .map(a => ({ id: a.id, title: a.title, category: a.category, source_name: a.source_name, published_at: a.published_at }));
+        related.push(...others);
+      }
+
       fs.writeFileSync(
         path.join(ARTICLES_DIR, `${article.id}.json`),
-        JSON.stringify(article)
+        JSON.stringify({ ...article, relatedArticles: related })
       );
     }
 

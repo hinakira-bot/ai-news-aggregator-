@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import Link from 'next/link';
 import { CATEGORIES } from '../../../config/sources';
+import ShareButtons from '../../../components/ShareButtons';
 
 export const dynamicParams = false;
 
@@ -61,6 +62,12 @@ function getCategoryLabel(slug) {
   return cat ? cat.label : slug;
 }
 
+function formatDateShort(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return `${d.getFullYear()}/${d.getMonth() + 1}/${d.getDate()}`;
+}
+
 export default async function ArticlePage({ params }) {
   const { id } = await params;
 
@@ -90,18 +97,37 @@ export default async function ArticlePage({ params }) {
   const publishedDate = article.published_at
     ? new Date(article.published_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
     : '';
+  const collectedDate = article.collected_at
+    ? new Date(article.collected_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
+    : '';
   const isHot = article.relevance_score >= 8;
 
-  const jsonLd = {
+  // key_points と faq を安全にパース（DBからはJSON文字列の場合がある）
+  const keyPoints = Array.isArray(article.key_points) ? article.key_points
+    : (typeof article.key_points === 'string' ? JSON.parse(article.key_points || '[]') : []);
+  const faq = Array.isArray(article.faq) ? article.faq
+    : (typeof article.faq === 'string' ? JSON.parse(article.faq || '[]') : []);
+  const relatedArticles = article.relatedArticles || [];
+
+  // === 構造化データ ===
+
+  // 1. NewsArticle schema（公開日 + 更新日）
+  const articleJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
     headline: article.title,
     description: article.commentary || article.summary,
-    author: { '@type': 'Person', name: 'ヒナキラ' },
+    author: {
+      '@type': 'Person',
+      name: 'ヒナキラ',
+      url: 'https://hinakira.com/',
+    },
     datePublished: article.published_at,
+    dateModified: article.collected_at || article.published_at,
     publisher: {
       '@type': 'Organization',
       name: 'Hinakira AI News',
+      url: 'https://hinakira.com/ai-news/',
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
@@ -109,22 +135,80 @@ export default async function ArticlePage({ params }) {
     },
   };
 
+  // 2. BreadcrumbList schema
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Hinakira AI News',
+        item: 'https://hinakira.com/ai-news/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: getCategoryLabel(article.category),
+        item: `https://hinakira.com/ai-news/?category=${article.category}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: article.title,
+        item: `https://hinakira.com/ai-news/articles/${id}/`,
+      },
+    ],
+  };
+
+  // 3. FAQPage schema（FAQがある場合のみ）
+  const faqJsonLd = faq.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map(item => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  } : null;
+
   return (
     <>
+      {/* 構造化データ */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
 
-      {/* 戻るリンク */}
-      <div className="max-w-4xl mx-auto px-4 pt-2 pb-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          ← 記事一覧に戻る
-        </Link>
-      </div>
+      {/* ① パンくずリスト */}
+      <nav className="max-w-4xl mx-auto px-4 pt-3 pb-4" aria-label="パンくずリスト">
+        <ol className="flex items-center gap-1.5 text-xs text-gray-400 flex-wrap">
+          <li>
+            <Link href="/" className="hover:text-gray-600 transition-colors">TOP</Link>
+          </li>
+          <li><span className="mx-1">/</span></li>
+          <li>
+            <span className={`${colors.text}`}>{getCategoryLabel(article.category)}</span>
+          </li>
+          <li><span className="mx-1">/</span></li>
+          <li className="text-gray-600 truncate max-w-[200px] sm:max-w-[400px]" title={article.title}>
+            {article.title}
+          </li>
+        </ol>
+      </nav>
 
       <article className="max-w-4xl mx-auto px-4 pb-12">
         {/* メインカード */}
@@ -148,8 +232,8 @@ export default async function ArticlePage({ params }) {
               {article.title}
             </h1>
 
-            {/* ソース + 日付 */}
-            <div className="flex items-center gap-3 text-sm text-gray-500">
+            {/* ⑥ ソース + 公開日 + 更新日 */}
+            <div className="flex items-center gap-3 text-sm text-gray-500 flex-wrap">
               <span className="flex items-center gap-1">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
                 {article.source_name}
@@ -157,7 +241,12 @@ export default async function ArticlePage({ params }) {
               {publishedDate && (
                 <span className="flex items-center gap-1">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                  {publishedDate}
+                  公開: {publishedDate}
+                </span>
+              )}
+              {collectedDate && collectedDate !== publishedDate && (
+                <span className="text-xs text-gray-400">
+                  (考察: {collectedDate})
                 </span>
               )}
             </div>
@@ -176,6 +265,26 @@ export default async function ArticlePage({ params }) {
               <span className="group-hover:underline">元記事を読む</span>
             </a>
 
+            {/* ③ ポイント3選セクション */}
+            {keyPoints.length > 0 && (
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1 h-5 bg-amber-400 rounded-full"></div>
+                  <h2 className="text-base font-bold text-gray-700">この記事のポイント</h2>
+                </div>
+                <ul className="space-y-2">
+                  {keyPoints.map((point, i) => (
+                    <li key={i} className="flex items-start gap-3 bg-amber-50 rounded-lg p-3 border border-amber-100">
+                      <span className="flex-shrink-0 w-6 h-6 bg-amber-400 text-white rounded-full flex items-center justify-center text-xs font-bold mt-0.5">
+                        {i + 1}
+                      </span>
+                      <span className="text-[15px] text-gray-700 leading-relaxed">{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
             {/* 要約セクション */}
             {article.summary && (
               <section>
@@ -193,7 +302,6 @@ export default async function ArticlePage({ params }) {
             {article.commentary && (
               <section>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className={`w-1 h-5 rounded-full ${colors.accent} bg-current`} style={{color: 'transparent', borderLeftWidth: '4px'}}></div>
                   <div className={`w-1 h-5 rounded-full`} style={{background: 'linear-gradient(to bottom, #3b82f6, #8b5cf6)'}}></div>
                   <h2 className="text-base font-bold text-gray-700">ヒナキラの考察</h2>
                 </div>
@@ -202,6 +310,33 @@ export default async function ArticlePage({ params }) {
                   <div className="text-[15px] text-gray-700 leading-[1.85] whitespace-pre-wrap pl-4">
                     {article.commentary}
                   </div>
+                </div>
+              </section>
+            )}
+
+            {/* ④ FAQセクション */}
+            {faq.length > 0 && (
+              <section>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1 h-5 bg-green-400 rounded-full"></div>
+                  <h2 className="text-base font-bold text-gray-700">よくある質問</h2>
+                </div>
+                <div className="space-y-3">
+                  {faq.map((item, i) => (
+                    <details key={i} className="bg-green-50 rounded-xl border border-green-100 group">
+                      <summary className="flex items-center gap-3 p-4 cursor-pointer select-none list-none">
+                        <span className="flex-shrink-0 w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold">Q</span>
+                        <span className="text-[15px] font-medium text-gray-800 flex-1">{item.question}</span>
+                        <svg className="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                      </summary>
+                      <div className="px-4 pb-4 pt-0 ml-9">
+                        <div className="flex items-start gap-2">
+                          <span className="flex-shrink-0 w-6 h-6 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-xs font-bold mt-0.5">A</span>
+                          <p className="text-[15px] text-gray-700 leading-relaxed">{item.answer}</p>
+                        </div>
+                      </div>
+                    </details>
+                  ))}
                 </div>
               </section>
             )}
@@ -218,8 +353,62 @@ export default async function ArticlePage({ params }) {
                 元記事を読む
               </a>
             </div>
+
+            {/* SNSシェアボタン */}
+            <ShareButtons
+              title={article.title}
+              url={`https://hinakira.com/ai-news/articles/${id}/`}
+            />
           </div>
         </div>
+
+        {/* ⑤ 著者プロフィール */}
+        <div className="mt-6 bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-lg">H</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-base font-bold text-gray-900 mb-1">ヒナキラ</h3>
+              <p className="text-xs text-gray-400 mb-2">Hinakira AI News 編集長</p>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                AIツール・LLM・プロンプト活用術を中心に、個人クリエイター・副業者向けのAI最新情報を毎日お届けしています。実際に使って試した知見をもとに、読者が「自分ごと」として活用できる考察を心がけています。
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ② 関連記事セクション */}
+        {relatedArticles.length > 0 && (
+          <div className="mt-6 bg-white rounded-2xl shadow-sm p-6 sm:p-8">
+            <h3 className="text-base font-bold text-gray-700 mb-4 flex items-center gap-2">
+              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+              関連する記事
+            </h3>
+            <ul className="space-y-2">
+              {relatedArticles.map(ra => (
+                <li key={ra.id}>
+                  <Link
+                    href={`/articles/${ra.id}/`}
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors group"
+                  >
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${
+                      (CATEGORY_COLORS[ra.category] || CATEGORY_COLORS['ai-tools']).badge
+                    }`}>
+                      {getCategoryLabel(ra.category)}
+                    </span>
+                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors flex-1 line-clamp-1">
+                      {ra.title}
+                    </span>
+                    <span className="text-[11px] text-gray-400 flex-shrink-0 hidden sm:inline">
+                      {formatDateShort(ra.published_at)}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* TOPに戻る（下部） */}
         <div className="mt-6 text-center">

@@ -41,6 +41,8 @@ export async function enrichArticles(articles) {
             ...article,
             summary: null,
             commentary: null,
+            keyPoints: [],
+            faq: [],
             category: 'ai-tools',
             relevanceScore: 5,
             importance: 'medium',
@@ -106,12 +108,20 @@ ${JSON.stringify(articlesForPrompt, null, 2)}
     "index": 0,
     "summary": "200〜300文字の日本語要約。記事の主要な事実・内容をわかりやすくまとめる。何が発表されたか、何が起きたか、どういう機能かを具体的に記述する。",
     "commentary": "400〜500文字の独自考察。事実の列挙ではなく、個人ユーザー・クリエイターにとってなぜ重要か、どう活用できるか、今後どんな影響があるかを深く解釈する。ブログ記事風の読みやすい文体で、「〜でしょう」「〜と考えられます」「〜がポイントです」などの表現を使い、読者が自分ごととして捉えられる視点で書く。具体的な活用シーンや、今後の展望にも触れる。",
+    "key_points": ["ポイント1（30〜50文字）", "ポイント2（30〜50文字）", "ポイント3（30〜50文字）"],
+    "faq": [
+      {"question": "読者が気になりそうな質問（30〜60文字）", "answer": "80〜120文字の回答"},
+      {"question": "もう一つの質問（30〜60文字）", "answer": "80〜120文字の回答"}
+    ],
     "category": "カテゴリslug",
     "relevance_score": 0-10の整数（個人ユーザーへの関連度。0=対象外で除外される）,
     "importance": "high|medium|low",
     "title_ja": "英語記事の場合、日本語タイトル。日本語記事はnull"
   }
 ]
+
+key_pointsは記事のポイントを3つ、具体的かつ簡潔にまとめる。「〜できる」「〜がある」などの体言止めや動詞終わりで統一。
+faqは読者が記事を読んで気になりそうな質問を2つ作成し、わかりやすく回答する。
 
 JSONのみを出力し、他のテキストは含めないでください。`;
 
@@ -133,6 +143,8 @@ JSONのみを出力し、他のテキストは含めないでください。`;
       ...article,
       summary: enrichment.summary || null,
       commentary: enrichment.commentary || null,
+      keyPoints: enrichment.key_points || [],
+      faq: enrichment.faq || [],
       category: enrichment.category || 'ai-tools',
       relevanceScore: enrichment.relevance_score ?? 5,
       importance: enrichment.importance || 'medium',
