@@ -5,6 +5,7 @@ import ArticleCard from './ArticleCard';
 import Sidebar from './Sidebar';
 
 const BASE_PATH = '/ai-news';
+const ARTICLES_PER_PAGE = 30;
 
 export default function ArticlesView({ initialData }) {
   const [articles, setArticles] = useState(initialData.articles || []);
@@ -16,6 +17,7 @@ export default function ArticlesView({ initialData }) {
   const [searchQuery, setSearchQuery] = useState(null);
   const [allArticlesForDate, setAllArticlesForDate] = useState(initialData.articles || []);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // 日付変更時に対応するJSONファイルを取得
   const loadDateData = useCallback(async (dateStr) => {
@@ -55,6 +57,7 @@ export default function ArticlesView({ initialData }) {
 
     setArticles(filtered);
     setTotal(filtered.length);
+    setCurrentPage(1);
   }, [allArticlesForDate, selectedCategory, searchQuery]);
 
   // 日付切替
@@ -62,7 +65,30 @@ export default function ArticlesView({ initialData }) {
     setCurrentDate(newDate);
     setSelectedCategory(null);
     setSearchQuery(null);
+    setCurrentPage(1);
     loadDateData(newDate);
+  };
+
+  // ページネーション計算
+  const totalPages = Math.ceil(articles.length / ARTICLES_PER_PAGE);
+  const startIndex = (currentPage - 1) * ARTICLES_PER_PAGE;
+  const paginatedArticles = articles.slice(startIndex, startIndex + ARTICLES_PER_PAGE);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ページ番号リスト生成（最大5ページ表示）
+  const getPageNumbers = () => {
+    if (totalPages <= 5) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 3) return [1, 2, 3, 4, 5];
+    if (currentPage >= totalPages - 2) {
+      return [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
   };
 
   return (
@@ -92,11 +118,48 @@ export default function ArticlesView({ initialData }) {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            {articles.map(a => (
-              <ArticleCard key={a.id} article={a} />
-            ))}
-          </div>
+          <>
+            <div className="space-y-3">
+              {paginatedArticles.map(a => (
+                <ArticleCard key={a.id} article={a} />
+              ))}
+            </div>
+
+            {/* ページネーション */}
+            {totalPages > 1 && (
+              <nav className="flex items-center justify-center gap-1 mt-8 mb-4">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  ← 前へ
+                </button>
+
+                {getPageNumbers().map(page => (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    className={`w-10 h-10 text-sm rounded-lg border transition-colors ${
+                      page === currentPage
+                        ? 'bg-blue-600 text-white border-blue-600 font-bold'
+                        : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 text-sm rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  次へ →
+                </button>
+              </nav>
+            )}
+          </>
         )}
       </div>
     </div>
