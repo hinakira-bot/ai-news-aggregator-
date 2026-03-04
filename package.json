@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "collect": "node scripts/collect.mjs",
+    "generate-data": "node scripts/generate-data.mjs",
+    "deploy-build": "npm run generate-data && npm run build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

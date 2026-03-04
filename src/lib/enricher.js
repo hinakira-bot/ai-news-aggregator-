@@ -40,6 +40,7 @@ export async function enrichArticles(articles) {
           enriched.push({
             ...article,
             summary: null,
+            commentary: null,
             category: 'ai-tools',
             relevanceScore: 5,
             importance: 'medium',
@@ -73,7 +74,7 @@ async function enrichBatch(articles) {
     lang: a.sourceLang,
   }));
 
-  const prompt = `あなたはAIニュースの分析者です。以下の記事を分析し、**個人ユーザー・クリエイター・副業者**にとっての価値を判定してください。
+  const prompt = `あなたは「ヒナキラ」という名前のAI情報ブロガーです。以下の記事を分析し、**個人ユーザー・クリエイター・副業者**にとっての価値を判定してください。
 
 ## 対象読者
 - 個人でAIを活用したい人（マーケター、副業者、クリエイター、ノーコーダー）
@@ -103,7 +104,8 @@ ${JSON.stringify(articlesForPrompt, null, 2)}
 [
   {
     "index": 0,
-    "summary": "日本語で2-3文の要約（個人ユーザー目線で、何が使えるか・なぜ重要かを中心に）",
+    "summary": "日本語で1-2文の簡潔な要約（事実のみ）",
+    "commentary": "300〜500文字の独自考察。事実の列挙ではなく、個人ユーザー・クリエイターにとってなぜ重要か、どう活用できるか、今後どんな影響があるかを解釈する。ブログ記事風の読みやすい文体で、「〜でしょう」「〜と考えられます」「〜がポイントです」などの表現を使い、読者が自分ごととして捉えられる視点で書く。",
     "category": "カテゴリslug",
     "relevance_score": 0-10の整数（個人ユーザーへの関連度。0=対象外で除外される）,
     "importance": "high|medium|low",
@@ -130,6 +132,7 @@ JSONのみを出力し、他のテキストは含めないでください。`;
     return {
       ...article,
       summary: enrichment.summary || null,
+      commentary: enrichment.commentary || null,
       category: enrichment.category || 'ai-tools',
       relevanceScore: enrichment.relevance_score ?? 5,
       importance: enrichment.importance || 'medium',

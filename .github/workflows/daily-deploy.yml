@@ -1,0 +1,61 @@
+name: Daily Collect & Deploy
+
+on:
+  schedule:
+    - cron: '0 23 * * *'  # UTC 23:00 = JST 08:00
+  workflow_dispatch:        # 手動トリガー
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  GEMINI_MODEL: gemini-3-flash-preview
+  NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+
+jobs:
+  collect:
+    name: Collect Articles
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Run collection pipeline
+        run: node scripts/collect.mjs
+
+  build-deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    needs: collect
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Generate static data from DB
+        run: node scripts/generate-data.mjs
+
+      - name: Build static site
+        run: npm run build
+
+      - name: Deploy to Lolipop via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./out/
+          server-dir: /ai-news/
+          dangerous-clean-slate: false

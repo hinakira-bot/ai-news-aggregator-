@@ -1,97 +1,82 @@
-'use client';
-
-import { useState, useEffect, useCallback } from 'react';
-import ArticleCard from '../components/ArticleCard';
-import Sidebar from '../components/Sidebar';
+import fs from 'fs';
+import path from 'path';
+import ArticlesView from '../components/ArticlesView';
 
 export default function Home() {
-  const [articles, setArticles] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [categories, setCategories] = useState({});
-  const [availableDates, setAvailableDates] = useState([]);
-  const [currentDate, setCurrentDate] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [searchQuery, setSearchQuery] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // ビルド時にJSONデータを読み込み
+  let initialData = { articles: [], total: 0, categories: {}, availableDates: [], date: null };
 
-  const fetchArticles = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const params = new URLSearchParams();
-      if (currentDate) params.set('date', currentDate);
-      if (selectedCategory) params.set('category', selectedCategory);
-      if (searchQuery) params.set('search', searchQuery);
+  try {
+    const indexPath = path.join(process.cwd(), 'public', 'data', 'index.json');
+    const indexJson = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
+    const latestDate = indexJson.dates[0];
 
-      const res = await fetch(`/api/articles?${params}`);
-      if (!res.ok) throw new Error('Failed to fetch');
-
-      const data = await res.json();
-      setArticles(data.articles || []);
-      setTotal(data.total || 0);
-      setCategories(data.categories || {});
-      setAvailableDates(data.availableDates || []);
-      if (!currentDate && data.date) {
-        setCurrentDate(data.date);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (latestDate) {
+      const datePath = path.join(process.cwd(), 'public', 'data', 'dates', `${latestDate}.json`);
+      const dateData = JSON.parse(fs.readFileSync(datePath, 'utf-8'));
+      initialData = {
+        articles: dateData.articles,
+        total: dateData.total,
+        categories: dateData.categories,
+        availableDates: indexJson.dates.map(d => ({ date: d, count: indexJson.dateCounts[d] || 0 })),
+        date: latestDate,
+      };
     }
-  }, [currentDate, selectedCategory, searchQuery]);
-
-  useEffect(() => {
-    fetchArticles();
-  }, [fetchArticles]);
+  } catch (e) {
+    console.warn('No data files found (first build?):', e.message);
+  }
 
   return (
-    <div className="flex gap-5 flex-col lg:flex-row">
-      {/* サイドバー */}
-      <Sidebar
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        categoryCounts={categories}
-        currentDate={currentDate}
-        availableDates={availableDates}
-        onDateChange={(date) => {
-          setCurrentDate(date);
-          setSelectedCategory(null);
+    <>
+      {/* SEO: 検索エンジン用の記事一覧 */}
+      <noscript>
+        <div>
+          <h2>AI News - Latest Articles</h2>
+          <ul>
+            {initialData.articles.map((a) => (
+              <li key={a.id}>
+                <a href={`/ai-news/articles/${a.id}/`}>
+                  <strong>{a.title}</strong>
+                </a>
+                {a.summary && <p>{a.summary}</p>}
+                <small>{a.source_name} - {a.category}</small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </noscript>
+
+      {/* JSON-LD 構造化データ */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            "name": "Hinakira AI News",
+            "description": "個人向けAI最新情報を毎日自動収集・AIで要約・考察",
+            "url": "https://hinakira.com/ai-news/",
+            "mainEntity": {
+              "@type": "ItemList",
+              "numberOfItems": initialData.total,
+              "itemListElement": initialData.articles.slice(0, 10).map((a, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "item": {
+                  "@type": "NewsArticle",
+                  "headline": a.title,
+                  "url": `https://hinakira.com/ai-news/articles/${a.id}/`,
+                  "description": a.summary || "",
+                  "publisher": { "@type": "Organization", "name": a.source_name },
+                },
+              })),
+            },
+          }),
         }}
-        searchQuery={searchQuery}
-        onSearch={setSearchQuery}
-        total={total}
       />
 
-      {/* メインコンテンツ: 4列グリッド */}
-      <div className="flex-1 min-w-0">
-        {loading ? (
-          <div className="text-center py-20 text-gray-400">
-            <div className="animate-pulse text-lg">Loading...</div>
-          </div>
-        ) : error ? (
-          <div className="text-center py-20">
-            <p className="text-red-500 mb-2">Error: {error}</p>
-            <button onClick={fetchArticles} className="text-sm text-blue-600 hover:underline">
-              Retry
-            </button>
-          </div>
-        ) : articles.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">
-            <p className="text-lg mb-1">No articles</p>
-            <p className="text-sm">
-              {currentDate ? `${currentDate} has no articles.` : 'No data yet.'}
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {articles.map(a => (
-              <ArticleCard key={a.id} article={a} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+      {/* インタラクティブなクライアントコンポーネント */}
+      <ArticlesView initialData={initialData} />
+    </>
   );
 }

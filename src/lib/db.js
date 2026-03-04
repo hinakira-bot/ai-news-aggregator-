@@ -38,14 +38,17 @@ export async function initializeDatabase() {
   await sql`CREATE INDEX IF NOT EXISTS idx_articles_importance ON articles(importance)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_articles_source ON articles(source_name)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_articles_relevance ON articles(relevance_score)`;
+
+  // commentary カラム追加（既存テーブルへの安全な追加）
+  await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS commentary TEXT`;
 }
 
 export async function insertArticle(article) {
   const sql = getDb();
   try {
     const result = await sql`
-      INSERT INTO articles (title, url, source_name, source_lang, published_at, summary, category, relevance_score, importance, original_title, thumbnail_url)
-      VALUES (${article.title}, ${article.url}, ${article.sourceName}, ${article.sourceLang}, ${article.publishedAt}, ${article.summary}, ${article.category}, ${article.relevanceScore}, ${article.importance}, ${article.originalTitle}, ${article.thumbnailUrl})
+      INSERT INTO articles (title, url, source_name, source_lang, published_at, summary, commentary, category, relevance_score, importance, original_title, thumbnail_url)
+      VALUES (${article.title}, ${article.url}, ${article.sourceName}, ${article.sourceLang}, ${article.publishedAt}, ${article.summary}, ${article.commentary || null}, ${article.category}, ${article.relevanceScore}, ${article.importance}, ${article.originalTitle}, ${article.thumbnailUrl})
       ON CONFLICT (url) DO NOTHING
       RETURNING id
     `;
@@ -123,9 +126,9 @@ export async function getArticles({ date, category, importance, search, page = 1
 export async function getAvailableDates(limit = 30) {
   const sql = getDb();
   const result = await sql`
-    SELECT DISTINCT DATE(collected_at AT TIME ZONE 'Asia/Tokyo') as date, COUNT(*) as count
+    SELECT DISTINCT TO_CHAR(collected_at AT TIME ZONE 'Asia/Tokyo', 'YYYY-MM-DD') as date, COUNT(*) as count
     FROM articles
-    GROUP BY DATE(collected_at AT TIME ZONE 'Asia/Tokyo')
+    GROUP BY TO_CHAR(collected_at AT TIME ZONE 'Asia/Tokyo', 'YYYY-MM-DD')
     ORDER BY date DESC
     LIMIT ${limit}
   `;
