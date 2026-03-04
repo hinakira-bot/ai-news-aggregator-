@@ -43,14 +43,15 @@ export async function initializeDatabase() {
   await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS commentary TEXT`;
   await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS key_points JSONB DEFAULT '[]'`;
   await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS faq JSONB DEFAULT '[]'`;
+  await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS is_pick BOOLEAN DEFAULT false`;
 }
 
 export async function insertArticle(article) {
   const sql = getDb();
   try {
     const result = await sql`
-      INSERT INTO articles (title, url, source_name, source_lang, published_at, summary, commentary, key_points, faq, category, relevance_score, importance, original_title, thumbnail_url)
-      VALUES (${article.title}, ${article.url}, ${article.sourceName}, ${article.sourceLang}, ${article.publishedAt}, ${article.summary}, ${article.commentary || null}, ${JSON.stringify(article.keyPoints || [])}, ${JSON.stringify(article.faq || [])}, ${article.category}, ${article.relevanceScore}, ${article.importance}, ${article.originalTitle}, ${article.thumbnailUrl})
+      INSERT INTO articles (title, url, source_name, source_lang, published_at, summary, commentary, key_points, faq, category, relevance_score, importance, original_title, thumbnail_url, is_pick)
+      VALUES (${article.title}, ${article.url}, ${article.sourceName}, ${article.sourceLang}, ${article.publishedAt}, ${article.summary}, ${article.commentary || null}, ${JSON.stringify(article.keyPoints || [])}, ${JSON.stringify(article.faq || [])}, ${article.category}, ${article.relevanceScore}, ${article.importance}, ${article.originalTitle}, ${article.thumbnailUrl}, ${article.isPick || false})
       ON CONFLICT (url) DO NOTHING
       RETURNING id
     `;

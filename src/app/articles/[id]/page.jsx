@@ -105,7 +105,7 @@ export default async function ArticlePage({ params }) {
   const collectedDate = article.collected_at
     ? new Date(article.collected_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
     : '';
-  const isHot = article.relevance_score >= 8;
+  const isPick = article.is_pick;
 
   // key_points と faq を安全にパース（DBからはJSON文字列の場合がある）
   const keyPoints = Array.isArray(article.key_points) ? article.key_points
@@ -227,9 +227,10 @@ export default async function ArticlePage({ params }) {
               <span className={`text-xs px-3 py-1 rounded-full font-semibold ${colors.badge}`}>
                 {getCategoryLabel(article.category)}
               </span>
-              {isHot && (
-                <span className="text-xs px-2 py-1 rounded-full font-bold bg-orange-100 text-orange-600">
-                  🔥 注目
+              {isPick && (
+                <span className="inline-flex items-center gap-1.5 text-xs px-3 py-1 rounded-full font-bold bg-gradient-to-r from-amber-400 to-yellow-400 text-white shadow-sm animate-pick-glow">
+                  <svg className="w-3.5 h-3.5 animate-spin-slow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  PICK OF THE DAY
                 </span>
               )}
             </div>

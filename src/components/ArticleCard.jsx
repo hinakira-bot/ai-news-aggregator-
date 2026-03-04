@@ -39,12 +39,14 @@ function formatDate(dateStr) {
 export default function ArticleCard({ article }) {
   const categoryColor = CATEGORY_COLORS[article.category] || 'bg-gray-100 text-gray-700 border-gray-200';
   const accentColor = CATEGORY_ACCENT[article.category] || 'group-hover:border-l-gray-500';
-  const isHot = article.relevance_score >= 8;
+  const isPick = article.is_pick;
 
   return (
     <Link
       href={`/articles/${article.id}/`}
-      className={`block bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 p-4 sm:p-5 group border-l-4 border-l-transparent ${accentColor}`}
+      className={`block rounded-xl border shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 p-4 sm:p-5 group border-l-4 border-l-transparent ${accentColor} ${
+        isPick ? 'bg-gradient-to-r from-amber-50 via-white to-white border-amber-200 ring-1 ring-amber-100' : 'bg-white border-gray-100'
+      }`}
     >
       <div className="flex flex-col sm:flex-row sm:items-start sm:gap-4">
         {/* メインコンテンツ */}
@@ -54,9 +56,10 @@ export default function ArticleCard({ article }) {
             <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold border ${categoryColor}`}>
               {getCategoryLabel(article.category)}
             </span>
-            {isHot && (
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-orange-50 text-orange-600 font-bold border border-orange-200">
-                🔥 HOT
+            {isPick && (
+              <span className="inline-flex items-center gap-1 text-[11px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-400 text-white font-bold shadow-sm animate-pick-glow">
+                <svg className="w-3 h-3 animate-spin-slow" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                PICK
               </span>
             )}
             <span className="text-[11px] text-gray-400 ml-auto hidden sm:inline">

@@ -50,6 +50,11 @@ async function main() {
     return (importanceOrder[a.importance] || 1) - (importanceOrder[b.importance] || 1);
   });
   const topArticles = sorted.slice(0, MAX_ARTICLES_PER_DAY);
+  // 1位の記事に★PickOf The Dayフラグ
+  if (topArticles.length > 0) {
+    topArticles[0].isPick = true;
+    console.log(`★ Pick of the Day: ${topArticles[0].title}`);
+  }
   console.log(`Selected top ${topArticles.length} articles (from ${enrichedArticles.length} candidates)`);
 
   // Step 5: DB保存
