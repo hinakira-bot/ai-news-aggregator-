@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '0 23 * * *'  # UTC 23:00 = JST 08:00
   workflow_dispatch:        # 手動トリガー
+  push:
+    branches: [main]
+    paths:
+      - 'public/data/site-config.json'
 
 env:
   DATABASE_URL: ${{ secrets.DATABASE_URL }}

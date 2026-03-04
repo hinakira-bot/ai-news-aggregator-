@@ -3,6 +3,8 @@ import path from 'path';
 import Link from 'next/link';
 import { CATEGORIES } from '../../../config/sources';
 import ShareButtons from '../../../components/ShareButtons';
+import ArticleSidebar from '../../../components/ArticleSidebar';
+import { getSiteConfig } from '../../../lib/site-config';
 
 export const dynamicParams = false;
 
@@ -92,6 +94,9 @@ export default async function ArticlePage({ params }) {
       </div>
     );
   }
+
+  const config = getSiteConfig();
+  const sidebarSections = config.sidebar?.sections || [];
 
   const colors = CATEGORY_COLORS[article.category] || CATEGORY_COLORS['ai-tools'];
   const publishedDate = article.published_at
@@ -194,7 +199,7 @@ export default async function ArticlePage({ params }) {
       )}
 
       {/* ① パンくずリスト */}
-      <nav className="max-w-4xl mx-auto px-4 pt-3 pb-4" aria-label="パンくずリスト">
+      <nav className="pt-3 pb-4" aria-label="パンくずリスト">
         <ol className="flex items-center gap-1.5 text-xs text-gray-400 flex-wrap">
           <li>
             <Link href="/" className="hover:text-gray-600 transition-colors">TOP</Link>
@@ -210,7 +215,9 @@ export default async function ArticlePage({ params }) {
         </ol>
       </nav>
 
-      <article className="max-w-4xl mx-auto px-4 pb-12">
+      <div className="flex gap-6 flex-col lg:flex-row pb-12">
+      {/* メインコンテンツ */}
+      <article className="flex-1 min-w-0">
         {/* メインカード */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           {/* ヘッダー部分 */}
@@ -228,7 +235,7 @@ export default async function ArticlePage({ params }) {
             </div>
 
             {/* タイトル */}
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-snug mb-3">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 leading-snug mb-3">
               {article.title}
             </h1>
 
@@ -410,6 +417,11 @@ export default async function ArticlePage({ params }) {
           </div>
         )}
 
+        {/* モバイル用サイドバー（lg未満で表示） */}
+        <div className="mt-6 lg:hidden">
+          <ArticleSidebar sections={sidebarSections} />
+        </div>
+
         {/* TOPに戻る（下部） */}
         <div className="mt-6 text-center">
           <Link
@@ -420,6 +432,14 @@ export default async function ArticlePage({ params }) {
           </Link>
         </div>
       </article>
+
+      {/* PC用サイドバー（lg以上で表示） */}
+      <aside className="w-72 flex-shrink-0 hidden lg:block">
+        <div className="sticky top-20">
+          <ArticleSidebar sections={sidebarSections} />
+        </div>
+      </aside>
+      </div>
     </>
   );
 }

@@ -65,7 +65,7 @@ export default function ArticleCard({ article }) {
           </div>
 
           {/* タイトル */}
-          <h3 className="text-[15px] font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-snug mb-1.5">
+          <h3 className="text-base sm:text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-snug mb-1.5">
             {article.title}
           </h3>
 
