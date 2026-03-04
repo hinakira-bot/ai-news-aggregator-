@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { initializeDatabase, insertArticle } from '../../../lib/db.js';
-import { fetchAllFeeds } from '../../../lib/feeds.js';
+import { fetchAllFeeds, fetchOgImages } from '../../../lib/feeds.js';
 import { deduplicateArticles } from '../../../lib/deduplicator.js';
 import { enrichArticles } from '../../../lib/enricher.js';
 
@@ -53,6 +53,10 @@ export async function GET(request) {
         duration: `${((Date.now() - startTime) / 1000).toFixed(1)}s`,
       });
     }
+
+    // Step 3.5: OG画像取得（サムネイルがない記事）
+    console.log('Step 3.5: Fetching OG images...');
+    await fetchOgImages(uniqueArticles, 5);
 
     // Step 4: AI要約・分類
     console.log('Step 4: Enriching with Gemini...');

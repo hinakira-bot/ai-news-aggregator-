@@ -112,5 +112,114 @@ function extractThumbnail(item) {
   if (item.enclosure?.url) return item.enclosure.url;
   if (item['media:content']?.$.url) return item['media:content'].$.url;
   if (item['media:thumbnail']?.$.url) return item['media:thumbnail'].$.url;
+  // content内のimg srcも試行
+  if (item.content) {
+    const imgMatch = item.content.match(/<img[^>]+src=["']([^"']+)["']/i);
+    if (imgMatch && imgMatch[1] && !imgMatch[1].includes('tracking') && !imgMatch[1].includes('pixel')) {
+      return imgMatch[1];
+    }
+  }
+  return null;
+}
+
+/**
+ * OG画像を記事ページから取得する
+ * サムネイルがない記事のみ対象、並列実行で高速化
+ */
+export async function fetchOgImages(articles, concurrency = 5) {
+  const needsImage = articles.filter(a => !a.thumbnailUrl && a.url);
+  if (needsImage.length === 0) {
+    console.log('All articles already have thumbnails');
+    return articles;
+  }
+
+  console.log(`Fetching OG images for ${needsImage.length}/${articles.length} articles...`);
+
+  // 並列数を制限して実行
+  let fetched = 0;
+  for (let i = 0; i < needsImage.length; i += concurrency) {
+    const batch = needsImage.slice(i, i + concurrency);
+    const results = await Promise.allSettled(
+      batch.map(article => fetchOgImage(article.url))
+    );
+
+    for (let j = 0; j < batch.length; j++) {
+      if (results[j].status === 'fulfilled' && results[j].value) {
+        batch[j].thumbnailUrl = results[j].value;
+        fetched++;
+      }
+    }
+  }
+
+  console.log(`OG images fetched: ${fetched}/${needsImage.length} successful`);
+  return articles;
+}
+
+/**
+ * 単一URLからOG画像を取得
+ */
+async function fetchOgImage(url) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5秒タイムアウト
+
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'AI-News-Aggregator/1.0 (OG Image Fetcher)',
+        'Accept': 'text/html',
+      },
+      redirect: 'follow',
+    });
+
+    clearTimeout(timeout);
+
+    if (!response.ok) return null;
+
+    // HTMLの先頭部分だけ読む（<head>にog:imageがあるため全文不要）
+    const reader = response.body?.getReader();
+    if (!reader) return null;
+
+    let html = '';
+    const decoder = new TextDecoder();
+    const maxBytes = 30000; // 先頭30KBのみ
+
+    while (html.length < maxBytes) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      html += decoder.decode(value, { stream: true });
+      // </head>を見つけたら早期終了
+      if (html.includes('</head>') || html.includes('</HEAD>')) break;
+    }
+
+    reader.cancel().catch(() => {}); // 残りを破棄
+
+    return extractOgImage(html);
+  } catch (error) {
+    // タイムアウトやネットワークエラーは静かにスキップ
+    return null;
+  }
+}
+
+/**
+ * HTMLからOG画像URLを抽出
+ */
+function extractOgImage(html) {
+  // og:image を優先
+  const ogMatch = html.match(
+    /<meta[^>]*property=["']og:image["'][^>]*content=["']([^"']+)["']/i
+  ) || html.match(
+    /<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:image["']/i
+  );
+  if (ogMatch && ogMatch[1]) return ogMatch[1];
+
+  // twitter:image フォールバック
+  const twMatch = html.match(
+    /<meta[^>]*(?:name|property)=["']twitter:image["'][^>]*content=["']([^"']+)["']/i
+  ) || html.match(
+    /<meta[^>]*content=["']([^"']+)["'][^>]*(?:name|property)=["']twitter:image["']/i
+  );
+  if (twMatch && twMatch[1]) return twMatch[1];
+
   return null;
 }
