@@ -448,7 +448,7 @@ export default function AdminPage() {
     return <TokenSetup onSave={handleTokenSave} />;
   }
 
-  if (loading) {
+  if (loading || !config) {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="animate-spin h-8 w-8 border-2 border-blue-600 rounded-full border-t-transparent"></div>
