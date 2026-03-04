@@ -2,21 +2,15 @@
 
 import { CATEGORIES } from '../config/sources';
 
-const IMPORTANCE_STYLES = {
-  high: 'border-l-4 border-l-orange-400 bg-orange-50',
-  medium: 'border-l-4 border-l-blue-300',
-  low: 'border-l-4 border-l-gray-200',
-};
-
 const CATEGORY_COLORS = {
-  'ai-tools': 'bg-purple-100 text-purple-800',
-  'llm-models': 'bg-blue-100 text-blue-800',
-  'prompts': 'bg-green-100 text-green-800',
-  'marketing': 'bg-pink-100 text-pink-800',
-  'side-business': 'bg-yellow-100 text-yellow-800',
-  'vibe-coding': 'bg-cyan-100 text-cyan-800',
-  'workflow': 'bg-indigo-100 text-indigo-800',
-  'media-ai': 'bg-red-100 text-red-800',
+  'ai-tools': 'bg-purple-100 text-purple-700',
+  'llm-models': 'bg-blue-100 text-blue-700',
+  'prompts': 'bg-green-100 text-green-700',
+  'marketing': 'bg-pink-100 text-pink-700',
+  'side-business': 'bg-yellow-100 text-yellow-700',
+  'vibe-coding': 'bg-cyan-100 text-cyan-700',
+  'workflow': 'bg-indigo-100 text-indigo-700',
+  'media-ai': 'bg-red-100 text-red-700',
 };
 
 function getCategoryLabel(slug) {
@@ -27,63 +21,64 @@ function getCategoryLabel(slug) {
 function formatDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
-  return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
 export default function ArticleCard({ article }) {
-  const importanceStyle = IMPORTANCE_STYLES[article.importance] || IMPORTANCE_STYLES.medium;
-  const categoryColor = CATEGORY_COLORS[article.category] || 'bg-gray-100 text-gray-800';
+  const categoryColor = CATEGORY_COLORS[article.category] || 'bg-gray-100 text-gray-700';
+  const isHot = article.relevance_score >= 8;
+  const isHigh = article.importance === 'high';
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow ${importanceStyle}`}>
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${categoryColor}`}>
-              {getCategoryLabel(article.category)}
-            </span>
-            <span className="text-xs text-gray-400">
-              {article.source_name}
-            </span>
-            <span className="text-xs text-gray-400">
-              {formatDate(article.published_at)}
-            </span>
-            {article.relevance_score >= 8 && (
-              <span className="text-xs text-orange-500 font-medium">HOT</span>
-            )}
-          </div>
-
-          <a
-            href={article.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-base font-semibold text-gray-900 hover:text-blue-600 transition-colors line-clamp-2 block"
-          >
-            {article.title}
-          </a>
-
-          {article.original_title && article.original_title !== article.title && (
-            <p className="text-xs text-gray-400 mt-0.5 truncate">
-              {article.original_title}
-            </p>
-          )}
-
-          {article.summary && (
-            <p className="text-sm text-gray-600 mt-2 line-clamp-3">
-              {article.summary}
-            </p>
-          )}
-        </div>
-
-        {article.thumbnail_url && (
+    <a
+      href={article.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`block bg-white rounded-lg shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 overflow-hidden group ${isHigh ? 'ring-1 ring-orange-300' : ''}`}
+    >
+      {/* サムネイル */}
+      {article.thumbnail_url ? (
+        <div className="w-full h-28 bg-gray-100 overflow-hidden">
           <img
             src={article.thumbnail_url}
             alt=""
-            className="w-20 h-20 rounded object-cover flex-shrink-0 hidden sm:block"
-            onError={(e) => { e.target.style.display = 'none'; }}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+            onError={(e) => { e.target.parentElement.style.display = 'none'; }}
           />
+        </div>
+      ) : (
+        <div className={`w-full h-2 ${isHigh ? 'bg-gradient-to-r from-orange-400 to-amber-400' : 'bg-gradient-to-r from-blue-400 to-purple-400'}`} />
+      )}
+
+      <div className="p-3">
+        {/* カテゴリ + メタ */}
+        <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+          <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${categoryColor}`}>
+            {getCategoryLabel(article.category)}
+          </span>
+          {isHot && (
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 font-bold">HOT</span>
+          )}
+        </div>
+
+        {/* タイトル */}
+        <h3 className="text-sm font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug mb-1.5">
+          {article.title}
+        </h3>
+
+        {/* 要約 */}
+        {article.summary && (
+          <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed mb-2">
+            {article.summary}
+          </p>
         )}
+
+        {/* ソース + 日付 */}
+        <div className="flex items-center justify-between text-[10px] text-gray-400">
+          <span>{article.source_name}</span>
+          <span>{formatDate(article.published_at)}</span>
+        </div>
       </div>
-    </div>
+    </a>
   );
 }
