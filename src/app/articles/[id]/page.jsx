@@ -373,7 +373,7 @@ export default async function ArticlePage({ params }) {
         <div className="mt-6 bg-white rounded-2xl shadow-sm p-6 sm:p-8">
           <div className="flex items-start gap-4">
             <img
-              src="/ai-news/images/profile.png"
+              src="/ai-news/images/profile.jpg"
               alt="ヒナキラ"
               width={56}
               height={56}
