@@ -1,5 +1,25 @@
 export const RSS_SOURCES = [
-  // === 海外（英語）- ツール・実用系中心 ===
+  // === 海外（英語）- 公式ブログ ===
+  {
+    name: 'OpenAI Blog',
+    url: 'https://openai.com/news/rss.xml',
+    lang: 'en',
+    priority: 'high',
+  },
+  {
+    name: 'Google DeepMind',
+    url: 'https://deepmind.google/blog/rss.xml',
+    lang: 'en',
+    priority: 'high',
+  },
+  {
+    name: 'Hugging Face Blog',
+    url: 'https://huggingface.co/blog/feed.xml',
+    lang: 'en',
+    priority: 'high',
+  },
+
+  // === 海外（英語）- メディア ===
   {
     name: 'The Verge AI',
     url: 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml',
@@ -7,35 +27,45 @@ export const RSS_SOURCES = [
     priority: 'high',
   },
   {
-    name: "There's An AI For That",
-    url: 'https://theresanaiforthat.com/rss/',
+    name: 'TechCrunch AI',
+    url: 'https://techcrunch.com/category/artificial-intelligence/feed/',
+    lang: 'en',
+    priority: 'high',
+  },
+
+  // === 海外（英語）- ニュースレター・個人 ===
+  {
+    name: 'The Rundown AI',
+    url: 'https://rss.beehiiv.com/feeds/2R3C6Bt5wj.xml',
     lang: 'en',
     priority: 'high',
   },
   {
-    name: 'OpenAI Blog',
-    url: 'https://openai.com/blog/rss.xml',
+    name: 'TLDR AI',
+    url: 'https://tldr.tech/api/rss/ai',
     lang: 'en',
     priority: 'high',
-  },
-  {
-    name: 'Anthropic Blog',
-    url: 'https://www.anthropic.com/rss.xml',
-    lang: 'en',
-    priority: 'high',
-  },
-  {
-    name: 'Google AI Blog',
-    url: 'https://blog.google/technology/ai/rss/',
-    lang: 'en',
-    priority: 'medium',
   },
   {
     name: "Ben's Bites",
-    url: 'https://bensbites.beehiiv.com/feed',
+    url: 'https://www.bensbites.com/feed',
     lang: 'en',
     priority: 'medium',
   },
+  {
+    name: 'Simon Willison',
+    url: 'https://simonwillison.net/atom/everything/',
+    lang: 'en',
+    priority: 'medium',
+  },
+  {
+    name: 'Martin Alderson',
+    url: 'https://martinalderson.com/feed.xml',
+    lang: 'en',
+    priority: 'medium',
+  },
+
+  // === 海外（英語）- プロダクト ===
   {
     name: 'Product Hunt AI',
     url: 'https://www.producthunt.com/feed?category=artificial-intelligence',
@@ -43,22 +73,22 @@ export const RSS_SOURCES = [
     priority: 'medium',
   },
 
-  // === 日本語 - 活用Tips・ツール系中心 ===
-  {
-    name: 'AINOW',
-    url: 'https://ainow.ai/feed/',
-    lang: 'ja',
-    priority: 'high',
-  },
-  {
-    name: 'Ledge.ai',
-    url: 'https://ledge.ai/feed/',
-    lang: 'ja',
-    priority: 'high',
-  },
+  // === 日本語 ===
   {
     name: 'ITmedia AI+',
     url: 'https://rss.itmedia.co.jp/rss/2.0/aiplus.xml',
+    lang: 'ja',
+    priority: 'high',
+  },
+  {
+    name: 'Zenn AI',
+    url: 'https://zenn.dev/topics/ai/feed',
+    lang: 'ja',
+    priority: 'high',
+  },
+  {
+    name: 'Zenn LLM',
+    url: 'https://zenn.dev/topics/llm/feed',
     lang: 'ja',
     priority: 'medium',
   },
