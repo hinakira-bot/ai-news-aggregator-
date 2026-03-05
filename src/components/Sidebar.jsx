@@ -23,6 +23,7 @@ export default function Sidebar({
   searchQuery,
   onSearch,
   total,
+  className = '',
 }) {
   const totalCount = Object.values(categoryCounts || {}).reduce((a, b) => a + b, 0);
 
@@ -38,7 +39,7 @@ export default function Sidebar({
   }
 
   return (
-    <aside className="w-full lg:w-60 flex-shrink-0 space-y-3">
+    <aside className={`w-full lg:w-60 flex-shrink-0 space-y-3 ${className}`}>
       {/* 検索 */}
       <div className="bg-white rounded-xl shadow-sm p-4">
         <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2.5">Search</h2>

@@ -103,9 +103,10 @@ export default function ArticlesView({ initialData }) {
         searchQuery={searchQuery}
         onSearch={setSearchQuery}
         total={total}
+        className="order-2 lg:order-none"
       />
 
-      <div className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0 order-1 lg:order-none">
         {loading ? (
           <div className="text-center py-20 text-gray-400">
             <div className="animate-pulse text-lg">読み込み中...</div>
