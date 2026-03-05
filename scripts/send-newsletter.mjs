@@ -42,10 +42,19 @@ function getDb() {
   return neon(process.env.DATABASE_URL);
 }
 
-// ===== 記事取得（当日分、relevance_score降順） =====
+// ===== 記事取得（前日収集分、relevance_score降順） =====
+// 収集は毎晩20:00 JST、配信は翌朝6:00 JST なので、デフォルトは前日の記事を取得
 async function getTodayArticles(dateOverride) {
   const sql = getDb();
-  const targetDate = dateOverride || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
+  let targetDate;
+  if (dateOverride) {
+    targetDate = dateOverride;
+  } else {
+    // 前日（JST）の日付を計算
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    targetDate = yesterday.toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
+  }
 
   console.log(`Fetching articles for date: ${targetDate}`);
 
@@ -562,7 +571,14 @@ async function main() {
     fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  const dateTag = dateOverride || new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
+  let dateTag;
+  if (dateOverride) {
+    dateTag = dateOverride;
+  } else {
+    const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    dateTag = yesterday.toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
+  }
 
   // 件名
   const subjectFile = path.join(outputDir, `${dateTag}-subject.txt`);
