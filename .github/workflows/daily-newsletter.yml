@@ -1,0 +1,31 @@
+name: Daily Newsletter
+
+on:
+  schedule:
+    - cron: '0 21 * * *'  # UTC 21:00 = JST 06:00（毎朝ニュースレター配信）
+  workflow_dispatch:        # 手動トリガー
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+jobs:
+  newsletter:
+    name: Send Newsletter
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GMAIL_USER: ${{ secrets.GMAIL_USER }}
+      GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+      MYASP_POST_ADDRESS: ${{ secrets.MYASP_POST_ADDRESS }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Generate and send newsletter
+        run: node scripts/send-newsletter.mjs --send
