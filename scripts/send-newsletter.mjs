@@ -538,7 +538,9 @@ async function main() {
   console.log('=== Hinakira AI News - Newsletter Generator ===\n');
 
   // 引数で日付指定可能（例: node scripts/send-newsletter.mjs 2026-03-05）
-  const dateOverride = process.argv[2] || null;
+  // --send フラグは日付ではないので除外
+  const args = process.argv.slice(2).filter(a => !a.startsWith('--'));
+  const dateOverride = args[0] || null;
 
   // Step 1: 記事取得
   const articles = await getTodayArticles(dateOverride);
