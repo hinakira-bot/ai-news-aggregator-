@@ -37,7 +37,9 @@ async function githubGet(token) {
   }
   if (!res.ok) throw new Error(`GitHub GET failed: ${res.status}`);
   const data = await res.json();
-  const content = JSON.parse(atob(data.content));
+  // UTF-8対応のBase64デコード
+  const decoded = decodeURIComponent(escape(atob(data.content)));
+  const content = JSON.parse(decoded);
   return { content, sha: data.sha };
 }
 
