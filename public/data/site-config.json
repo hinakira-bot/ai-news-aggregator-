@@ -18,7 +18,7 @@
         "type": "sns",
         "enabled": true,
         "order": 3,
-        "title": "SNSアカウント",
+        "title": "ヒナキラのSNSアカウント",
         "accounts": [
           {
             "platform": "twitter",
@@ -28,6 +28,11 @@
           {
             "platform": "threads",
             "url": "https://www.threads.com/@hinakira_gpts_creator",
+            "label": "hinakira_gpts_creator"
+          },
+          {
+            "platform": "instagram",
+            "url": "https://www.instagram.com/hinakira_gpts_creator/",
             "label": "hinakira_gpts_creator"
           }
         ]
@@ -42,5 +47,5 @@
       }
     ]
   },
-  "updatedAt": "2026-03-05T00:27:45.951Z"
+  "updatedAt": "2026-03-05T00:31:22.069Z"
 }
