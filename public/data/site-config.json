@@ -44,8 +44,35 @@
         "order": 4,
         "title": "ãç¥ãã",
         "content": "<p>ããã«ãç¥ãããè¨å¥</p>"
+      },
+      {
+        "id": "rzem41",
+        "type": "links",
+        "enabled": true,
+        "order": 3,
+        "title": "おすすめコンテンツ",
+        "items": [
+          {
+            "label": "【爆速革命】ブログ用GPTsスペシャルセット",
+            "url": "https://brain-market.com/u/hinakira/a/bwkjN5AjMgoTZsNWa0JXY",
+            "description": "一気通貫でブログ記事を作れるGPTsセット",
+            "badge": ""
+          },
+          {
+            "label": "スレッズ自動投稿ツール（ツリー対応型）",
+            "url": "https://brain-market.com/u/hinakira/a/b0YzN1MjMgoTZsNWa0JXY",
+            "description": "画像付きマニュアル＆サポートGPTsで安心設計",
+            "badge": ""
+          },
+          {
+            "label": "【 神曲 】超良曲を作りまくれるGPTsセット",
+            "url": "https://brain-market.com/u/hinakira/a/bykjN3IjMgoTZsNWa0JXY",
+            "description": "Sunoで超良曲を作りまくれる音楽生成GPTs",
+            "badge": ""
+          }
+        ]
       }
     ]
   },
-  "updatedAt": "2026-03-05T00:31:22.069Z"
+  "updatedAt": "2026-03-05T00:47:18.029Z"
 }
