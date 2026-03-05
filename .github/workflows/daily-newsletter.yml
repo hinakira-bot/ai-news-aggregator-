@@ -2,7 +2,7 @@ name: Daily Newsletter
 
 on:
   schedule:
-    - cron: '30 22 * * *'  # UTC 22:30 = JST 07:30（テスト配信）
+    - cron: '30 23 * * *'  # UTC 23:30 = JST 08:30（テスト配信）
   workflow_dispatch:        # 手動トリガー
 
 env:
