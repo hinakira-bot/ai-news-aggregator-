@@ -4,8 +4,8 @@
     "menuItems": [
       {
         "id": "blog",
-        "label": "メルマガ登録（AI特典付き）",
-        "url": "https://hinakira.net/p/r/RwKLzKtX",
+        "label": "メルマガの登録はこちら（日刊AIニュース＆特典付き）",
+        "url": "https://hinakira.net/p/r/oMbRX0yO",
         "highlight": true,
         "external": false
       }
@@ -74,5 +74,5 @@
       }
     ]
   },
-  "updatedAt": "2026-03-05T00:47:18.029Z"
+  "updatedAt": "2026-03-05T08:22:46.160Z"
 }
