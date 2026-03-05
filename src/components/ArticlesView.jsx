@@ -150,7 +150,7 @@ export default function ArticlesView({ initialData }) {
                     onClick={() => handlePageChange(page)}
                     className={`w-10 h-10 text-sm rounded-xl border transition-colors font-medium ${
                       page === currentPage
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                        ? 'bg-[#4a5a7a] text-white border-[#4a5a7a] shadow-sm'
                         : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
                     }`}
                   >

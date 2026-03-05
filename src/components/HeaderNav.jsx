@@ -19,11 +19,11 @@ export default function HeaderNav({ menuItems = [] }) {
             rel={item.external !== false ? 'noopener noreferrer' : undefined}
             className={
               item.highlight
-                ? 'group relative inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 overflow-hidden'
+                ? 'group relative inline-flex items-center gap-1.5 px-5 py-2.5 text-sm font-bold text-white rounded-xl shadow-lg shadow-[#4a5a7a]/25 hover:shadow-xl hover:shadow-[#4a5a7a]/30 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 overflow-hidden'
                 : 'px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors'
             }
             style={item.highlight ? {
-              background: 'linear-gradient(135deg, #3B82F6 0%, #6366F1 50%, #8B5CF6 100%)',
+              background: 'linear-gradient(135deg, #4a5a7a 0%, #5d6d8e 40%, #c4a0a0 100%)',
               backgroundSize: '200% 200%',
               animation: 'gradient-shift 3s ease infinite',
             } : undefined}
@@ -81,7 +81,7 @@ export default function HeaderNav({ menuItems = [] }) {
                 onClick={() => setIsOpen(false)}
                 className={`block px-3 py-2.5 rounded-lg text-sm transition-colors ${
                   item.highlight
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-center rounded-xl'
+                    ? 'bg-gradient-to-r from-[#4a5a7a] to-[#5d6d8e] text-white font-bold text-center rounded-xl'
                     : 'text-gray-700 hover:bg-gray-50'
                 }`}
               >

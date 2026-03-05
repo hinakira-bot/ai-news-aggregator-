@@ -77,7 +77,7 @@ export default async function ArticlePage({ params }) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4 text-center">
         <h1 className="text-2xl font-bold text-gray-700 mb-4">記事が見つかりません</h1>
-        <Link href="/" className="text-blue-600 hover:underline">← TOPに戻る</Link>
+        <Link href="/" className="text-[#4a5a7a] hover:underline">← TOPに戻る</Link>
       </div>
     );
   }
@@ -90,7 +90,7 @@ export default async function ArticlePage({ params }) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4 text-center">
         <h1 className="text-2xl font-bold text-gray-700 mb-4">記事が見つかりません</h1>
-        <Link href="/" className="text-blue-600 hover:underline">← TOPに戻る</Link>
+        <Link href="/" className="text-[#4a5a7a] hover:underline">← TOPに戻る</Link>
       </div>
     );
   }
@@ -267,7 +267,7 @@ export default async function ArticlePage({ params }) {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 transition-colors group"
+              className="inline-flex items-center gap-2 text-sm text-[#4a5a7a] hover:text-[#3a4a68] transition-colors group"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
               <span className="group-hover:underline">元記事を読む</span>
@@ -310,11 +310,11 @@ export default async function ArticlePage({ params }) {
             {article.commentary && (
               <section>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className={`w-1 h-5 rounded-full`} style={{background: 'linear-gradient(to bottom, #3b82f6, #8b5cf6)'}}></div>
+                  <div className={`w-1 h-5 rounded-full`} style={{background: 'linear-gradient(to bottom, #4a5a7a, #c4a0a0)'}}></div>
                   <h2 className="text-base font-bold text-gray-700">当サイトの考察</h2>
                 </div>
-                <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
-                  <div className="absolute top-4 left-4 text-blue-200 text-4xl leading-none font-serif">&ldquo;</div>
+                <div className="relative bg-gradient-to-br from-[#f5eded] to-[#eef0f4] rounded-xl p-5 border border-[#c4a0a0]/20">
+                  <div className="absolute top-4 left-4 text-[#c4a0a0]/40 text-4xl leading-none font-serif">&ldquo;</div>
                   <div className="text-[15px] text-gray-700 leading-[1.85] whitespace-pre-wrap pl-4">
                     {article.commentary}
                   </div>
@@ -355,7 +355,7 @@ export default async function ArticlePage({ params }) {
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full sm:w-auto sm:inline-flex px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-xl hover:from-blue-700 hover:to-blue-800 transition-all shadow-sm hover:shadow text-sm font-medium"
+                className="flex items-center justify-center gap-2 w-full sm:w-auto sm:inline-flex px-6 py-3 bg-gradient-to-r from-[#4a5a7a] to-[#3a4a68] text-white rounded-xl hover:from-[#3a4a68] hover:to-[#2d3b52] transition-all shadow-sm hover:shadow text-sm font-medium"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                 元記事を読む
@@ -409,7 +409,7 @@ export default async function ArticlePage({ params }) {
                     }`}>
                       {getCategoryLabel(ra.category)}
                     </span>
-                    <span className="text-sm text-gray-700 group-hover:text-blue-600 transition-colors flex-1 line-clamp-1">
+                    <span className="text-sm text-gray-700 group-hover:text-[#4a5a7a] transition-colors flex-1 line-clamp-1">
                       {ra.title}
                     </span>
                     <span className="text-[11px] text-gray-400 flex-shrink-0 hidden sm:inline">

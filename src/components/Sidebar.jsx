@@ -51,7 +51,7 @@ export default function Sidebar({
               autoComplete="off"
               defaultValue={searchQuery || ''}
               placeholder="キーワード検索..."
-              className="w-full pl-3 pr-9 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-colors"
+              className="w-full pl-3 pr-9 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a5a7a]/20 focus:border-[#4a5a7a]/40 transition-colors"
             />
             <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -67,7 +67,7 @@ export default function Sidebar({
           <select
             value={currentDate || ''}
             onChange={(e) => onDateChange(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 bg-white transition-colors"
+            className="w-full px-3 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#4a5a7a]/20 focus:border-[#4a5a7a]/40 bg-white transition-colors"
           >
             {availableDates.map(d => {
               const dateStr = typeof d.date === 'string' ? d.date.split('T')[0] : new Date(d.date).toISOString().split('T')[0];
@@ -89,7 +89,7 @@ export default function Sidebar({
             <button
               onClick={() => onSelectCategory(null)}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between transition-colors ${
-                !selectedCategory ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'
+                !selectedCategory ? 'bg-[#4a5a7a]/10 text-[#4a5a7a] font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
               <span>📋 すべて</span>
@@ -104,7 +104,7 @@ export default function Sidebar({
                   onClick={() => onSelectCategory(selectedCategory === cat.slug ? null : cat.slug)}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm flex items-center justify-between transition-colors ${
                     selectedCategory === cat.slug
-                      ? 'bg-blue-50 text-blue-700 font-semibold'
+                      ? 'bg-[#4a5a7a]/10 text-[#4a5a7a] font-semibold'
                       : count > 0
                         ? 'text-gray-600 hover:bg-gray-50'
                         : 'text-gray-300 cursor-not-allowed'
@@ -121,9 +121,9 @@ export default function Sidebar({
       </div>
 
       {/* 統計 */}
-      <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-sm p-4 text-center">
+      <div className="bg-gradient-to-br from-[#4a5a7a] to-[#3a4a68] rounded-xl shadow-sm p-4 text-center">
         <div className="text-3xl font-bold text-white">{total}</div>
-        <div className="text-[11px] text-blue-200 uppercase tracking-wide mt-0.5">articles</div>
+        <div className="text-[11px] text-[#c4a0a0] uppercase tracking-wide mt-0.5">articles</div>
       </div>
     </aside>
   );
