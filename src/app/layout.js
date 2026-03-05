@@ -13,6 +13,14 @@ export const metadata = {
   title: "Hinakira AI News - 個人向けAI最新情報まとめ",
   description: "最新AIツール、LLMモデル、プロンプト活用術、バイブコーディングなど、個人クリエイター・副業者向けのAI情報を毎日配信・考察",
   metadataBase: new URL('https://hinakira.com'),
+  icons: {
+    icon: [
+      { url: '/ai-news/logo.jpg', type: 'image/jpeg' },
+    ],
+    apple: [
+      { url: '/ai-news/logo.jpg' },
+    ],
+  },
   openGraph: {
     title: "Hinakira AI News",
     description: "個人向けAI最新情報を毎日配信・AIで要約・考察",
