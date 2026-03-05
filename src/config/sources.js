@@ -73,12 +73,38 @@ export const RSS_SOURCES = [
     priority: 'medium',
   },
 
+  // === 海外（英語）- 公式ブログ追加 ===
+  {
+    name: 'Meta AI Research',
+    url: 'https://engineering.fb.com/category/ai-research/feed/',
+    lang: 'en',
+    priority: 'medium',
+  },
+
   // === 日本語 ===
   {
     name: 'ITmedia AI+',
     url: 'https://rss.itmedia.co.jp/rss/2.0/aiplus.xml',
     lang: 'ja',
     priority: 'high',
+  },
+  {
+    name: 'ASCII.jp TECH',
+    url: 'https://ascii.jp/tech/rss.xml',
+    lang: 'ja',
+    priority: 'high',
+  },
+  {
+    name: 'Publickey',
+    url: 'https://www.publickey1.jp/atom.xml',
+    lang: 'ja',
+    priority: 'high',
+  },
+  {
+    name: 'GIGAZINE',
+    url: 'https://gigazine.net/news/rss_2.0/',
+    lang: 'ja',
+    priority: 'medium',
   },
   {
     name: 'Zenn AI',
@@ -97,6 +123,14 @@ export const RSS_SOURCES = [
     url: 'https://qiita.com/tags/ai/feed',
     lang: 'ja',
     priority: 'medium',
+  },
+
+  // === 論文（優先度低：個人に実用的なもののみ選ばれる） ===
+  {
+    name: 'arXiv NLP/LLM',
+    url: 'https://arxiv.org/rss/cs.CL',
+    lang: 'en',
+    priority: 'low',
   },
 ];
 

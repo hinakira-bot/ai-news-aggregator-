@@ -95,8 +95,13 @@ async function enrichBatch(articles) {
 ## 除外基準（relevance_score = 0にする）
 - 大手企業のAI導入事例（例: 「トヨタがAIを〇〇に活用」）
 - エンタープライズ向けBtoB SaaS
-- 学術論文・理論的な研究のみ
+- 純粋に理論的な学術論文（数式中心、再現不可能な基礎研究）
 - 政府の規制・政策のみ
+
+## 論文の扱い（arXiv等）
+- 個人が実際に使えるツール・モデル・手法を紹介する論文は対象とする（relevance_score 3〜6程度）
+- 新しいLLMの性能比較、プロンプト手法、画像生成の新技術などは実用的なので含める
+- ただしニュース記事より優先度は下げる（importanceは原則 "low"）
 
 ## 記事一覧
 ${JSON.stringify(articlesForPrompt, null, 2)}
