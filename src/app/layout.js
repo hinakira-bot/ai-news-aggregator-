@@ -43,16 +43,15 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} antialiased bg-gray-50 min-h-screen`}>
         <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 shadow-sm">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between relative">
-            <a href="/ai-news/" className="flex items-center gap-3 group">
-              <div className="relative w-11 h-11">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-xl rotate-3 group-hover:rotate-6 transition-transform opacity-80 blur-[2px]"></div>
-                <div className="relative w-11 h-11 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                  <svg className="w-5.5 h-5.5 text-white" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                </div>
-              </div>
+            <a href="/ai-news/" className="flex items-center gap-2.5 group">
+              <img
+                src="/ai-news/logo.jpg"
+                alt="Hinakira AI News"
+                className="w-11 h-11 rounded-lg object-cover group-hover:scale-105 transition-transform"
+              />
               <div>
                 <h1 className="text-xl font-extrabold leading-tight">
-                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent group-hover:from-blue-500 group-hover:to-purple-500 transition-all">Hinakira</span>
+                  <span className="text-[#4a5a7a]">Hinakira</span>
                   <span className="text-gray-800 ml-1">AI News</span>
                 </h1>
                 <p className="text-[10px] text-gray-400 leading-tight tracking-wide hidden sm:block">{'\u301D'}個人向け{'\u301E'}に毎日最新のAI情報を配信</p>
