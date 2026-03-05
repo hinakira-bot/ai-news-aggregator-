@@ -14,52 +14,21 @@
   "sidebar": {
     "sections": [
       {
-        "id": "newsletter",
-        "type": "newsletter",
-        "enabled": true,
-        "order": 1,
-        "title": "AIææ°æå ±ã¡ã«ãã¬",
-        "description": "æ¯æã®AIãã¥ã¼ã¹ãè¦éããªãï¼åäººã¯ãªã¨ã¤ã¿ã¼ã»å¯æ¥­èåãã®AIæ´»ç¨è¡ãéä¿¡ä¸­ã",
-        "url": "https://hinakira.com/newsletter/",
-        "buttonText": "ç¡æã§ç»é²ãã"
-      },
-      {
-        "id": "links",
-        "type": "links",
-        "enabled": true,
-        "order": 2,
-        "title": "ããããã³ã³ãã³ã",
-        "items": [
-          {
-            "label": "ããã­ã©ãã­ã°",
-            "url": "https://hinakira.com/",
-            "description": "AIã»ãã­ã°ã»å¯æ¥­ã®æå ±",
-            "badge": ""
-          },
-          {
-            "label": "AIå¯æ¥­å¥éã¬ã¤ã",
-            "url": "https://hinakira.com/ai-guide/",
-            "description": "åå¿èåãå®å¨ã¬ã¤ã",
-            "badge": "NEW"
-          }
-        ]
-      },
-      {
         "id": "sns",
         "type": "sns",
         "enabled": true,
         "order": 3,
-        "title": "SNSããã©ã­ã¼",
+        "title": "SNSアカウント",
         "accounts": [
           {
             "platform": "twitter",
-            "url": "https://twitter.com/hinakira_",
-            "label": "@hinakira_"
+            "url": "https://x.com/hinakira_gpts",
+            "label": "@hinakira_gpts"
           },
           {
-            "platform": "youtube",
-            "url": "https://youtube.com/@hinakira",
-            "label": "YouTube"
+            "platform": "threads",
+            "url": "https://www.threads.com/@hinakira_gpts_creator",
+            "label": "hinakira_gpts_creator"
           }
         ]
       },
@@ -73,5 +42,5 @@
       }
     ]
   },
-  "updatedAt": "2026-03-05T00:25:53.797Z"
+  "updatedAt": "2026-03-05T00:27:45.951Z"
 }
