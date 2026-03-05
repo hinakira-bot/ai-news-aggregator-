@@ -317,8 +317,54 @@ function SidebarEditor({ sections, onChange }) {
 }
 
 // ===== トークン設定画面 =====
-function TokenSetup({ onSave }) {
+// トークンからASCII以外の不正文字を除去
+function sanitizeToken(raw) {
+  return raw.replace(/[^\x20-\x7E]/g, '').trim();
+}
+
+function TokenSetup({ onSave, errorMessage }) {
   const [token, setToken] = useState('');
+  const [testing, setTesting] = useState(false);
+  const [testError, setTestError] = useState(errorMessage || '');
+
+  const handleSubmit = async () => {
+    const clean = sanitizeToken(token);
+    if (!clean) return;
+    setTesting(true);
+    setTestError('');
+    try {
+      // トークンの有効性を事前チェック
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`, {
+        headers: { Authorization: `Bearer ${clean}`, Accept: 'application/vnd.github.v3+json' },
+      });
+      if (res.status === 401) {
+        setTestError('トークンが無効です。正しいトークンを入力してください。');
+        setTesting(false);
+        return;
+      }
+      if (res.status === 403) {
+        setTestError('権限が不足しています。Contents: Read and write 権限を確認してください。');
+        setTesting(false);
+        return;
+      }
+      if (res.status === 404) {
+        setTestError('リポジトリまたはファイルが見つかりません。リポジトリの選択を確認してください。');
+        setTesting(false);
+        return;
+      }
+      if (!res.ok) {
+        setTestError(`GitHub APIエラー: ${res.status}`);
+        setTesting(false);
+        return;
+      }
+      // 成功 → 保存
+      onSave(clean);
+    } catch (e) {
+      setTestError(`接続エラー: ${e.message}`);
+      setTesting(false);
+    }
+  };
+
   return (
     <div className="max-w-lg mx-auto py-12">
       <div className="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
@@ -333,6 +379,12 @@ function TokenSetup({ onSave }) {
           </p>
         </div>
 
+        {testError && (
+          <div className="bg-red-50 rounded-xl p-4 mb-4 border border-red-200">
+            <p className="text-xs text-red-700">{testError}</p>
+          </div>
+        )}
+
         <div className="space-y-4">
           <div>
             <label className="text-xs text-gray-500 mb-1 block">GitHub Personal Access Token</label>
@@ -340,16 +392,17 @@ function TokenSetup({ onSave }) {
               type="password"
               value={token}
               onChange={(e) => setToken(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
               className="w-full text-sm px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="github_pat_..."
             />
           </div>
           <button
-            onClick={() => { if (token.trim()) onSave(token.trim()); }}
-            disabled={!token.trim()}
+            onClick={handleSubmit}
+            disabled={!token.trim() || testing}
             className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-sm font-medium rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            設定して管理画面に進む
+            {testing ? '確認中...' : '設定して管理画面に進む'}
           </button>
         </div>
         <p className="text-[11px] text-gray-400 mt-4 text-center">トークンはこのブラウザのlocalStorageにのみ保存されます</p>
@@ -384,6 +437,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (!token) return;
     setLoading(true);
+    setErrorMsg('');
     githubGet(token)
       .then(({ content, sha }) => {
         setConfig(content);
@@ -392,21 +446,31 @@ export default function AdminPage() {
       })
       .catch((e) => {
         console.error('Failed to load config:', e);
-        // トークンが無効かも → フォールバック
-        setConfig({
-          version: 1,
-          header: { menuItems: [] },
-          sidebar: { sections: [] },
-          updatedAt: null,
-        });
-        setLoading(false);
-        setErrorMsg('GitHubから設定を読み込めませんでした。トークンを確認してください。');
+        const is401 = e.message?.includes('401');
+        if (is401) {
+          // トークン無効 → セットアップに戻す
+          localStorage.removeItem('hinakira_admin_token');
+          setToken(null);
+          setLoading(false);
+          setErrorMsg('トークンが無効または期限切れです。再度設定してください。');
+        } else {
+          // その他のエラー → フォールバック設定で続行
+          setConfig({
+            version: 1,
+            header: { menuItems: [] },
+            sidebar: { sections: [] },
+            updatedAt: null,
+          });
+          setLoading(false);
+          setErrorMsg('GitHubから設定を読み込めませんでした: ' + e.message);
+        }
       });
   }, [token]);
 
   const handleTokenSave = (newToken) => {
-    localStorage.setItem('hinakira_admin_token', newToken);
-    setToken(newToken);
+    const clean = sanitizeToken(newToken);
+    localStorage.setItem('hinakira_admin_token', clean);
+    setToken(clean);
   };
 
   const handleSave = useCallback(async () => {
@@ -445,7 +509,7 @@ export default function AdminPage() {
 
   // トークン未設定
   if (!token && !loading) {
-    return <TokenSetup onSave={handleTokenSave} />;
+    return <TokenSetup onSave={handleTokenSave} errorMessage={errorMsg} />;
   }
 
   if (loading || !config) {
