@@ -11,11 +11,11 @@ const geistSans = localFont({
 
 export const metadata = {
   title: "Hinakira AI News - 個人向けAI最新情報まとめ",
-  description: "最新AIツール、LLMモデル、プロンプト活用術、バイブコーディングなど、個人クリエイター・副業者向けのAI情報を毎日自動収集・考察",
+  description: "最新AIツール、LLMモデル、プロンプト活用術、バイブコーディングなど、個人クリエイター・副業者向けのAI情報を毎日配信・考察",
   metadataBase: new URL('https://hinakira.com'),
   openGraph: {
     title: "Hinakira AI News",
-    description: "個人向けAI最新情報を毎日自動収集・AIで要約・考察",
+    description: "個人向けAI最新情報を毎日配信・AIで要約・考察",
     url: "https://hinakira.com/ai-news/",
     siteName: "Hinakira AI News",
     locale: "ja_JP",
@@ -24,7 +24,7 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Hinakira AI News",
-    description: "個人向けAI最新情報を毎日自動収集・AIで要約・考察",
+    description: "個人向けAI最新情報を毎日配信・AIで要約・考察",
   },
   alternates: {
     canonical: "https://hinakira.com/ai-news/",
@@ -66,7 +66,7 @@ export default function RootLayout({ children }) {
         </main>
         <footer className="border-t border-gray-200/80 bg-white mt-8">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 text-center text-xs text-gray-400">
-            <p>Hinakira AI News - 個人向けAI最新情報を毎日自動収集</p>
+            <p>Hinakira AI News - 個人向けAI最新情報を毎日配信</p>
           </div>
         </footer>
       </body>

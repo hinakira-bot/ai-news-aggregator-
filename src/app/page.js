@@ -54,7 +54,7 @@ export default function Home() {
             "@context": "https://schema.org",
             "@type": "CollectionPage",
             "name": "Hinakira AI News",
-            "description": "個人向けAI最新情報を毎日自動収集・AIで要約・考察",
+            "description": "個人向けAI最新情報を毎日配信・AIで要約・考察",
             "url": "https://hinakira.com/ai-news/",
             "mainEntity": {
               "@type": "ItemList",

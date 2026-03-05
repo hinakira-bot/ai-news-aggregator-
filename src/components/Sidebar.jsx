@@ -47,6 +47,7 @@ export default function Sidebar({
             <input
               name="search"
               type="text"
+              autoComplete="off"
               defaultValue={searchQuery || ''}
               placeholder="キーワード検索..."
               className="w-full pl-3 pr-9 py-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-colors"
