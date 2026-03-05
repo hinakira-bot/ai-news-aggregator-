@@ -31,6 +31,10 @@ async function githubGet(token) {
   const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`, {
     headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.v3+json' },
   });
+  if (res.status === 404) {
+    // ファイルが存在しない → デフォルト設定を返す（sha=nullで新規作成扱い）
+    return { content: null, sha: null };
+  }
   if (!res.ok) throw new Error(`GitHub GET failed: ${res.status}`);
   const data = await res.json();
   const content = JSON.parse(atob(data.content));
@@ -39,6 +43,11 @@ async function githubGet(token) {
 
 async function githubPut(token, config, sha) {
   const body = JSON.stringify(config, null, 2);
+  const payload = {
+    message: sha ? 'update: サイト設定を管理画面から更新' : 'add: サイト設定ファイルを新規作成',
+    content: btoa(unescape(encodeURIComponent(body))),
+  };
+  if (sha) payload.sha = sha; // 新規作成時はshaを含めない
   const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${CONFIG_PATH}`, {
     method: 'PUT',
     headers: {
@@ -46,11 +55,7 @@ async function githubPut(token, config, sha) {
       Accept: 'application/vnd.github.v3+json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      message: 'update: サイト設定を管理画面から更新',
-      content: btoa(unescape(encodeURIComponent(body))),
-      sha,
-    }),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -348,8 +353,8 @@ function TokenSetup({ onSave, errorMessage }) {
         return;
       }
       if (res.status === 404) {
-        setTestError('リポジトリまたはファイルが見つかりません。リポジトリの選択を確認してください。');
-        setTesting(false);
+        // ファイルが未作成 → 初回セットアップとして許可
+        onSave(clean);
         return;
       }
       if (!res.ok) {
@@ -440,8 +445,14 @@ export default function AdminPage() {
     setErrorMsg('');
     githubGet(token)
       .then(({ content, sha }) => {
-        setConfig(content);
-        setSha(sha);
+        const defaultConfig = {
+          version: 1,
+          header: { menuItems: [] },
+          sidebar: { sections: [] },
+          updatedAt: null,
+        };
+        setConfig(content || defaultConfig);
+        setSha(sha); // null if file doesn't exist yet
         setLoading(false);
       })
       .catch((e) => {

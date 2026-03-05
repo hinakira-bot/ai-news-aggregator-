@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "header": {
+    "menuItems": [
+      { "id": "blog", "label": "ブログ", "url": "https://hinakira.com/", "highlight": false, "external": false },
+      { "id": "newsletter", "label": "メルマガ登録", "url": "https://hinakira.com/newsletter/", "highlight": true, "external": true }
+    ]
+  },
+  "sidebar": {
+    "sections": [
+      {
+        "id": "newsletter",
+        "type": "newsletter",
+        "enabled": true,
+        "order": 1,
+        "title": "AI最新情報メルマガ",
+        "description": "毎朝のAIニュースを見逃さない！個人クリエイター・副業者向けのAI活用術も配信中。",
+        "url": "https://hinakira.com/newsletter/",
+        "buttonText": "無料で登録する"
+      },
+      {
+        "id": "links",
+        "type": "links",
+        "enabled": true,
+        "order": 2,
+        "title": "おすすめコンテンツ",
+        "items": [
+          { "label": "ヒナキラブログ", "url": "https://hinakira.com/", "description": "AI・ブログ・副業の情報", "badge": "" },
+          { "label": "AI副業入門ガイド", "url": "https://hinakira.com/ai-guide/", "description": "初心者向け完全ガイド", "badge": "NEW" }
+        ]
+      },
+      {
+        "id": "sns",
+        "type": "sns",
+        "enabled": true,
+        "order": 3,
+        "title": "SNSをフォロー",
+        "accounts": [
+          { "platform": "twitter", "url": "https://twitter.com/hinakira_", "label": "@hinakira_" },
+          { "platform": "youtube", "url": "https://youtube.com/@hinakira", "label": "YouTube" }
+        ]
+      },
+      {
+        "id": "custom1",
+        "type": "html",
+        "enabled": false,
+        "order": 4,
+        "title": "お知らせ",
+        "content": "<p>ここにお知らせを記入</p>"
+      }
+    ]
+  },
+  "updatedAt": "2026-03-05T00:00:00.000Z"
+}
