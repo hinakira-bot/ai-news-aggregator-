@@ -1,7 +1,8 @@
-import { initializeDatabase, insertArticle } from '../src/lib/db.js';
+import { initializeDatabase, insertArticle, getRecentArticlesByCategory } from '../src/lib/db.js';
 import { fetchAllFeeds, fetchOgImages } from '../src/lib/feeds.js';
 import { deduplicateArticles } from '../src/lib/deduplicator.js';
 import { enrichArticles } from '../src/lib/enricher.js';
+import { extractArticleContent } from '../src/lib/extractor.js';
 
 const MAX_ARTICLES_PER_DAY = 10;
 
@@ -37,9 +38,31 @@ async function main() {
   console.log('Step 3.5: Fetching OG images...');
   await fetchOgImages(uniqueArticles, 5);
 
-  // Step 4: AI要約・分類・考察
-  console.log('Step 4: Enriching with Gemini (summary + commentary)...');
-  const enrichedArticles = await enrichArticles(uniqueArticles);
+  // Step 3.7: 記事本文抽出（Readability）
+  console.log('Step 3.7: Extracting article content...');
+  await extractArticleContent(uniqueArticles, 3);
+  const contentCount = uniqueArticles.filter(a => a.bodyText).length;
+  console.log(`Content extracted for ${contentCount}/${uniqueArticles.length} articles`);
+
+  // Step 3.8: 過去記事コンテキスト読み込み
+  console.log('Step 3.8: Loading historical context...');
+  const categories = ['ai-tools', 'llm-models', 'prompts', 'marketing', 'side-business', 'vibe-coding', 'workflow', 'media-ai'];
+  const historicalContext = {};
+  for (const cat of categories) {
+    try {
+      const recent = await getRecentArticlesByCategory(cat, 7, 5);
+      if (recent.length > 0) {
+        historicalContext[cat] = recent;
+      }
+    } catch (err) {
+      console.warn(`Historical context for ${cat} failed:`, err.message);
+    }
+  }
+  console.log(`Historical context: ${Object.keys(historicalContext).length} categories with past articles`);
+
+  // Step 4: AI要約・分類・考察（本文＋過去記事コンテキスト付き）
+  console.log('Step 4: Enriching with Gemini (summary + commentary + context)...');
+  const enrichedArticles = await enrichArticles(uniqueArticles, historicalContext);
   const excludedCount = uniqueArticles.length - enrichedArticles.length;
   console.log(`${enrichedArticles.length} articles enriched, ${excludedCount} excluded (relevance=0)`);
 

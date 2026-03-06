@@ -15,7 +15,7 @@ function getModel() {
 
 const BATCH_SIZE = 5;
 
-export async function enrichArticles(articles) {
+export async function enrichArticles(articles, historicalContext = {}) {
   const enriched = [];
 
   // バッチ処理（5記事ずつ）
@@ -24,14 +24,14 @@ export async function enrichArticles(articles) {
     console.log(`Enriching batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(articles.length / BATCH_SIZE)}...`);
 
     try {
-      const results = await enrichBatch(batch);
+      const results = await enrichBatch(batch, historicalContext);
       enriched.push(...results);
     } catch (error) {
       console.error(`Batch enrichment failed, retrying...`, error.message);
       // リトライ1回
       try {
         await new Promise(resolve => setTimeout(resolve, 2000));
-        const results = await enrichBatch(batch);
+        const results = await enrichBatch(batch, historicalContext);
         enriched.push(...results);
       } catch (retryError) {
         console.error(`Retry failed, saving without enrichment`, retryError.message);
@@ -65,7 +65,7 @@ export async function enrichArticles(articles) {
   return filtered;
 }
 
-async function enrichBatch(articles) {
+async function enrichBatch(articles, historicalContext = {}) {
   const ai = getModel();
 
   const articlesForPrompt = articles.map((a, i) => ({
@@ -74,7 +74,29 @@ async function enrichBatch(articles) {
     description: a.description?.substring(0, 300) || '',
     source: a.sourceName,
     lang: a.sourceLang,
+    // 記事本文（extractor.js で取得済み、最大2000文字）
+    article_text: a.bodyText?.substring(0, 2000) || null,
   }));
+
+  // 過去記事コンテキストを構築
+  let historySection = '';
+  const historyEntries = Object.entries(historicalContext);
+  if (historyEntries.length > 0) {
+    const historyData = historyEntries.map(([cat, arts]) => ({
+      category: cat,
+      recent_articles: arts.map(a => ({
+        title: a.title,
+        summary: a.summary?.substring(0, 150) || '',
+        date: a.collected_at,
+      }))
+    }));
+    historySection = `
+## 過去の関連記事（直近7日間）
+以下は過去7日間に掲載された関連記事の要約です。考察（commentary）では、これらの過去記事との関連性や流れを踏まえて、「先週発表された〇〇と比較すると...」「以前から話題になっている〇〇の続報として...」のように、時系列的な文脈を盛り込んでください。ただし過去記事への言及は自然な場合のみ行い、無理に言及する必要はありません。
+
+${JSON.stringify(historyData, null, 2)}
+`;
+  }
 
   const prompt = `あなたは「ヒナキラ」という名前のAI情報ブロガーです。以下の記事を分析し、**個人ユーザー・クリエイター・副業者**にとっての価値を判定してください。
 
@@ -104,15 +126,19 @@ async function enrichBatch(articles) {
 - ただしニュース記事より優先度は下げる（importanceは原則 "low"）
 
 ## 記事一覧
-${JSON.stringify(articlesForPrompt, null, 2)}
+各記事にはtitle、description（RSS概要）に加え、article_text（記事本文、最大2000文字）が含まれます。
+article_textがnullの記事は、titleとdescriptionのみで判断してください。
+article_textがある記事は、本文の具体的な内容（数値、機能名、比較情報など）を活用して、より深い要約・考察を生成してください。
 
+${JSON.stringify(articlesForPrompt, null, 2)}
+${historySection}
 ## 回答形式
 以下のJSON配列で回答してください。各記事に対して:
 [
   {
     "index": 0,
-    "summary": "200〜300文字の日本語要約。記事の主要な事実・内容をわかりやすくまとめる。何が発表されたか、何が起きたか、どういう機能かを具体的に記述する。",
-    "commentary": "400〜500文字の独自考察。事実の列挙ではなく、個人ユーザー・クリエイターにとってなぜ重要か、どう活用できるか、今後どんな影響があるかを深く解釈する。ブログ記事風の読みやすい文体で、「〜でしょう」「〜と考えられます」「〜がポイントです」などの表現を使い、読者が自分ごととして捉えられる視点で書く。具体的な活用シーンや、今後の展望にも触れる。",
+    "summary": "200〜300文字の日本語要約。記事の主要な事実・内容をわかりやすくまとめる。何が発表されたか、何が起きたか、どういう機能かを具体的に記述する。article_textがある場合は具体的な数値や機能名も含める。",
+    "commentary": "400〜500文字の独自考察。事実の列挙ではなく、個人ユーザー・クリエイターにとってなぜ重要か、どう活用できるか、今後どんな影響があるかを深く解釈する。ブログ記事風の読みやすい文体で、「〜でしょう」「〜と考えられます」「〜がポイントです」などの表現を使い、読者が自分ごととして捉えられる視点で書く。具体的な活用シーンや、今後の展望にも触れる。過去の関連記事がある場合は、時系列的な文脈も自然に盛り込む。",
     "key_points": ["ポイント1（30〜50文字）", "ポイント2（30〜50文字）", "ポイント3（30〜50文字）"],
     "faq": [
       {"question": "読者が気になりそうな質問（30〜60文字）", "answer": "80〜120文字の回答"},

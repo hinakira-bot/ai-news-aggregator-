@@ -44,14 +44,15 @@ export async function initializeDatabase() {
   await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS key_points JSONB DEFAULT '[]'`;
   await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS faq JSONB DEFAULT '[]'`;
   await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS is_pick BOOLEAN DEFAULT false`;
+  await sql`ALTER TABLE articles ADD COLUMN IF NOT EXISTS content TEXT`;
 }
 
 export async function insertArticle(article) {
   const sql = getDb();
   try {
     const result = await sql`
-      INSERT INTO articles (title, url, source_name, source_lang, published_at, summary, commentary, key_points, faq, category, relevance_score, importance, original_title, thumbnail_url, is_pick)
-      VALUES (${article.title}, ${article.url}, ${article.sourceName}, ${article.sourceLang}, ${article.publishedAt}, ${article.summary}, ${article.commentary || null}, ${JSON.stringify(article.keyPoints || [])}, ${JSON.stringify(article.faq || [])}, ${article.category}, ${article.relevanceScore}, ${article.importance}, ${article.originalTitle}, ${article.thumbnailUrl}, ${article.isPick || false})
+      INSERT INTO articles (title, url, source_name, source_lang, published_at, summary, commentary, key_points, faq, category, relevance_score, importance, original_title, thumbnail_url, is_pick, content)
+      VALUES (${article.title}, ${article.url}, ${article.sourceName}, ${article.sourceLang}, ${article.publishedAt}, ${article.summary}, ${article.commentary || null}, ${JSON.stringify(article.keyPoints || [])}, ${JSON.stringify(article.faq || [])}, ${article.category}, ${article.relevanceScore}, ${article.importance}, ${article.originalTitle}, ${article.thumbnailUrl}, ${article.isPick || false}, ${article.bodyText || null})
       ON CONFLICT (url) DO NOTHING
       RETURNING id
     `;
@@ -124,6 +125,24 @@ export async function getArticles({ date, category, importance, search, page = 1
     total: parseInt(countResult[0].total),
     categories: Object.fromEntries(categoryStats.map(c => [c.category, parseInt(c.count)])),
   };
+}
+
+/**
+ * 同カテゴリの直近記事を取得（過去記事コンテキスト用）
+ * enricher に過去の文脈を渡すために使用
+ */
+export async function getRecentArticlesByCategory(category, daysBack = 7, limit = 5) {
+  const sql = getDb();
+  const cutoff = new Date(Date.now() - daysBack * 24 * 60 * 60 * 1000);
+  const result = await sql`
+    SELECT title, summary, category, collected_at, source_name
+    FROM articles
+    WHERE category = ${category}
+      AND collected_at >= ${cutoff}
+    ORDER BY collected_at DESC
+    LIMIT ${limit}
+  `;
+  return result;
 }
 
 export async function getAvailableDates(limit = 30) {
