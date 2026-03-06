@@ -50,7 +50,7 @@ export default function RootLayout({ children }) {
     <html lang="ja">
       <body className={`${geistSans.variable} antialiased bg-gray-50 min-h-screen`}>
         <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/80 sticky top-0 z-50 shadow-sm">
-          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between relative">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between relative">
             <a href="/ai-news/" className="flex items-center gap-2.5 group">
               <img
                 src="/ai-news/logo.jpg"
@@ -68,11 +68,11 @@ export default function RootLayout({ children }) {
             <HeaderNav menuItems={config.header?.menuItems || []} />
           </div>
         </header>
-        <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6">
+        <main className="max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
           {children}
         </main>
         <footer className="border-t border-gray-200/80 bg-white mt-8">
-          <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-4 text-center text-xs text-gray-400">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-4 text-center text-xs text-gray-400">
             <p>Hinakira AI News - 個人向けAI最新情報を毎日配信</p>
           </div>
         </footer>
