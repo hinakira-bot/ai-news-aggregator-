@@ -135,7 +135,7 @@ export async function getRecentArticlesByCategory(category, daysBack = 7, limit 
   const sql = getDb();
   const cutoff = new Date(Date.now() - daysBack * 24 * 60 * 60 * 1000);
   const result = await sql`
-    SELECT title, summary, category, collected_at, source_name
+    SELECT title, summary, commentary, category, collected_at, source_name
     FROM articles
     WHERE category = ${category}
       AND collected_at >= ${cutoff}

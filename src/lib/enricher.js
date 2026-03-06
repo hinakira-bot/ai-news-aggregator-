@@ -86,13 +86,14 @@ async function enrichBatch(articles, historicalContext = {}) {
       category: cat,
       recent_articles: arts.map(a => ({
         title: a.title,
-        summary: a.summary?.substring(0, 150) || '',
+        summary: a.summary?.substring(0, 200) || '',
+        commentary: a.commentary?.substring(0, 200) || '',
         date: a.collected_at,
       }))
     }));
     historySection = `
 ## 過去の関連記事（直近7日間）
-以下は過去7日間に掲載された関連記事の要約です。考察（commentary）では、これらの過去記事との関連性や流れを踏まえて、「先週発表された〇〇と比較すると...」「以前から話題になっている〇〇の続報として...」のように、時系列的な文脈を盛り込んでください。ただし過去記事への言及は自然な場合のみ行い、無理に言及する必要はありません。
+以下は過去7日間に掲載された関連記事の要約と考察です。新しい考察（commentary）では、これらの過去記事との関連性や流れを踏まえて、「先週発表された〇〇と比較すると...」「以前から話題になっている〇〇の続報として...」のように、時系列的な文脈を盛り込んでください。ただし過去記事への言及は自然な場合のみ行い、無理に言及する必要はありません。
 
 ${JSON.stringify(historyData, null, 2)}
 `;
