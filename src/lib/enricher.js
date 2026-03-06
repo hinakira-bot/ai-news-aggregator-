@@ -14,7 +14,59 @@ function getModel() {
 }
 
 const BATCH_SIZE = 5;
+const SCORING_BATCH_SIZE = 15;
 
+/**
+ * Stage 1: 軽量スコアリング（タイトル＋descriptionだけで判定）
+ * 全記事を大きなバッチで高速処理し、category/relevanceScore/importance のみ返す
+ */
+export async function scoreArticles(articles) {
+  const scored = [];
+
+  for (let i = 0; i < articles.length; i += SCORING_BATCH_SIZE) {
+    const batch = articles.slice(i, i + SCORING_BATCH_SIZE);
+    console.log(`Scoring batch ${Math.floor(i / SCORING_BATCH_SIZE) + 1}/${Math.ceil(articles.length / SCORING_BATCH_SIZE)}...`);
+
+    try {
+      const results = await scoreBatch(batch);
+      scored.push(...results);
+    } catch (error) {
+      console.error(`Scoring batch failed, retrying...`, error.message);
+      try {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        const results = await scoreBatch(batch);
+        scored.push(...results);
+      } catch (retryError) {
+        console.error(`Scoring retry failed, using defaults`, retryError.message);
+        for (const article of batch) {
+          scored.push({
+            ...article,
+            category: 'ai-tools',
+            relevanceScore: 5,
+            importance: 'medium',
+            originalTitle: article.sourceLang === 'en' ? article.title : null,
+          });
+        }
+      }
+    }
+
+    // レート制限対策
+    if (i + SCORING_BATCH_SIZE < articles.length) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+    }
+  }
+
+  // relevanceScore 0 の記事を除外
+  const filtered = scored.filter(a => a.relevanceScore > 0);
+  console.log(`Scoring complete: ${scored.length} processed, ${scored.length - filtered.length} excluded (relevance=0), ${filtered.length} kept`);
+
+  return filtered;
+}
+
+/**
+ * Stage 2: フル処理（上位候補のみ、本文＋過去記事コンテキスト付き）
+ * summary, commentary, key_points, FAQ を生成
+ */
 export async function enrichArticles(articles, historicalContext = {}) {
   const enriched = [];
 
@@ -177,11 +229,95 @@ JSONのみを出力し、他のテキストは含めないでください。`;
       commentary: enrichment.commentary || null,
       keyPoints: enrichment.key_points || [],
       faq: enrichment.faq || [],
-      category: enrichment.category || 'ai-tools',
-      relevanceScore: enrichment.relevance_score ?? 5,
-      importance: enrichment.importance || 'medium',
+      category: enrichment.category || article.category || 'ai-tools',
+      relevanceScore: enrichment.relevance_score ?? article.relevanceScore ?? 5,
+      importance: enrichment.importance || article.importance || 'medium',
       originalTitle: enrichment.title_ja || (article.sourceLang === 'en' ? article.title : null),
       title: enrichment.title_ja || article.title,
+    };
+  });
+}
+
+/**
+ * Stage 1 用: 軽量バッチスコアリング
+ * タイトル+descriptionだけでカテゴリ・スコア・重要度を判定
+ */
+async function scoreBatch(articles) {
+  const ai = getModel();
+
+  const articlesForPrompt = articles.map((a, i) => ({
+    index: i,
+    title: a.title,
+    description: a.description?.substring(0, 300) || '',
+    source: a.sourceName,
+    lang: a.sourceLang,
+  }));
+
+  const prompt = `以下の記事を分析し、**個人ユーザー・クリエイター・副業者**にとっての関連度をスコアリングしてください。
+
+## 対象読者
+- 個人でAIを活用したい人（マーケター、副業者、クリエイター、ノーコーダー）
+- AIの最新ツールやLLMの動向を追いたい人
+
+## カテゴリ一覧（slugで回答）
+- ai-tools: 最新ツール・サービス
+- llm-models: 最新LLM・モデル（GPT, Claude, Gemini等）
+- prompts: プロンプト・活用術
+- marketing: マーケティング×AI
+- side-business: 副業・収益化
+- vibe-coding: バイブコーディング・AI支援コーディング
+- workflow: ワークフロー・自動化
+- media-ai: 画像・動画・音声AI
+
+## 除外基準（relevance_score = 0）
+- 大手企業のAI導入事例（例: 「トヨタがAIを〇〇に活用」）
+- エンタープライズ向けBtoB SaaS
+- 純粋に理論的な学術論文（数式中心、再現不可能な基礎研究）
+- 政府の規制・政策のみ
+
+## 論文の扱い（arXiv等）
+- 個人が使えるツール・モデル・手法を紹介する論文は対象（relevance_score 3〜6）
+- ニュース記事より優先度は下げる（importanceは原則 "low"）
+
+## 記事一覧
+${JSON.stringify(articlesForPrompt, null, 2)}
+
+## 回答形式
+以下のJSON配列で回答してください。**スコアリングのみ、要約や考察は不要です。**
+[
+  {
+    "index": 0,
+    "category": "カテゴリslug",
+    "relevance_score": 0-10の整数,
+    "importance": "high|medium|low",
+    "title_ja": "英語記事の場合、日本語タイトル。日本語記事はnull",
+    "topic_id": "同じトピックの記事をグループ化するための短いキーワード（英語、小文字、ハイフン区切り）。例: 'gpt-5-release', 'cursor-update', 'midjourney-v7'。異なるソースが同じニュースを報じている場合は同じtopic_idを付ける。ユニークなトピックにはユニークなtopic_idを付ける"
+  }
+]
+
+JSONのみを出力し、他のテキストは含めないでください。`;
+
+  const result = await ai.generateContent(prompt);
+  const text = result.response.text();
+
+  let jsonStr = text;
+  const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (jsonMatch) {
+    jsonStr = jsonMatch[1];
+  }
+
+  const parsed = JSON.parse(jsonStr.trim());
+
+  return articles.map((article, i) => {
+    const scoring = parsed.find(p => p.index === i) || {};
+    return {
+      ...article,
+      category: scoring.category || 'ai-tools',
+      relevanceScore: scoring.relevance_score ?? 5,
+      importance: scoring.importance || 'medium',
+      topicId: scoring.topic_id || `unique-${i}`,
+      originalTitle: scoring.title_ja || (article.sourceLang === 'en' ? article.title : null),
+      title: scoring.title_ja || article.title,
     };
   });
 }
