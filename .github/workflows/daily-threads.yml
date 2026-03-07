@@ -29,23 +29,18 @@ jobs:
 
       # トークン有効性チェック（失敗したら即通知して中断）
       - name: Verify Threads access token
-        id: token-check
         run: |
-          RESPONSE=$(curl -s "https://graph.threads.net/v1.0/me?fields=id,username&access_token=${THREADS_ACCESS_TOKEN}")
-          echo "API Response: $RESPONSE"
-
-          # エラーチェック
-          if echo "$RESPONSE" | grep -q '"error"'; then
-            ERROR_MSG=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['error']['message'])" 2>/dev/null || echo "Unknown error")
-            echo "::error::Threads token is invalid: $ERROR_MSG"
-            echo "token_valid=false" >> $GITHUB_OUTPUT
-            echo "error_message=$ERROR_MSG" >> $GITHUB_OUTPUT
-            exit 1
-          fi
-
-          USERNAME=$(echo "$RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin).get('username','unknown'))" 2>/dev/null || echo "unknown")
-          echo "✅ Token valid for @$USERNAME"
-          echo "token_valid=true" >> $GITHUB_OUTPUT
+          node -e "
+            const token = process.env.THREADS_ACCESS_TOKEN;
+            if (!token) { console.error('::error::THREADS_ACCESS_TOKEN is not set'); process.exit(1); }
+            fetch('https://graph.threads.net/v1.0/me?fields=id,username&access_token=' + token)
+              .then(r => r.json())
+              .then(d => {
+                if (d.error) { console.error('::error::Token invalid: ' + d.error.message); process.exit(1); }
+                console.log('✅ Token valid for @' + d.username);
+              })
+              .catch(e => { console.error('::error::API request failed: ' + e.message); process.exit(1); });
+          "
 
       - name: Generate Threads post content
         run: node scripts/generate-threads-post.mjs
@@ -71,7 +66,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               state: 'open',
-              labels: 'threads-bot'
+              labels: 'bug'
             });
             if (existing.data.some(i => i.title.includes('Threads自動投稿が失敗'))) {
               console.log('既存のIssueがあるためスキップ');
@@ -98,5 +93,5 @@ jobs:
                 '2. GitHub → Settings → Secrets → `THREADS_ACCESS_TOKEN` を更新',
                 '3. Actions タブから手動で再実行（workflow_dispatch）',
               ].join('\n'),
-              labels: ['threads-bot', 'bug']
+              labels: ['bug']
             });
