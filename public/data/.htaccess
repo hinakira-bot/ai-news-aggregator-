@@ -1,0 +1,7 @@
+<IfModule mod_headers.c>
+  <Files "pickup.json">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, OPTIONS"
+    Header set Cache-Control "public, max-age=3600"
+  </Files>
+</IfModule>

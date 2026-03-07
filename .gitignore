@@ -38,6 +38,7 @@ next-env.d.ts
 # generated data files (built in CI)
 public/data/
 !public/data/site-config.json
+!public/data/.htaccess
 
 # newsletter previews
 /newsletters/
