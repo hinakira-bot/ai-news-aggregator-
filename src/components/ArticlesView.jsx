@@ -13,6 +13,7 @@ export default function ArticlesView({ initialData }) {
   const [categories, setCategories] = useState(initialData.categories || {});
   const [availableDates, setAvailableDates] = useState(initialData.availableDates || []);
   const [currentDate, setCurrentDate] = useState(initialData.date || null);
+  const [totalAllArticles] = useState(initialData.totalAllArticles || 0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchQuery, setSearchQuery] = useState(null);
   const [allArticlesForDate, setAllArticlesForDate] = useState(initialData.articles || []);
@@ -103,6 +104,8 @@ export default function ArticlesView({ initialData }) {
         searchQuery={searchQuery}
         onSearch={setSearchQuery}
         total={total}
+        dateTotal={allArticlesForDate.length}
+        totalAllArticles={totalAllArticles}
         className="order-2 lg:order-none"
       />
 

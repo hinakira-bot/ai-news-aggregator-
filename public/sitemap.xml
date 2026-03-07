@@ -3,8 +3,848 @@
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
   <url>
     <loc>https://hinakira.com/ai-news/</loc>
-    <lastmod>2026-03-04</lastmod>
+    <lastmod>2026-03-07</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/141/</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-06T08:53:40.000Z</news:publication_date>
+      <news:title>【速報】OpenAI GPT-5.4 徹底解説：ネイティブPC操作と100万コンテキストがもたらす開発フローの革命</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/142/</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-06T08:03:14.000Z</news:publication_date>
+      <news:title>【60秒で完了】ChatGPTの記憶をClaudeに丸ごと移行する方法 - もう乗り換えない言い訳はない</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/143/</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-06T03:17:00.000Z</news:publication_date>
+      <news:title>Google Workspace CLIリリース、Googleドライブ・Gmail・Googleスプレッドシート・Googleドキュメントなどを1つのコマンドラインツールで一括管理可能＆AIエージェントのスキルもあり</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/145/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T15:57:29.000Z</news:publication_date>
+      <news:title>AI編集チームを「エコシステム」に育てた話 (2/2) — draw.io自動図解・カタログ管理・GEO対応</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/146/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T10:35:45.000Z</news:publication_date>
+      <news:title>Qwen3.5-9BをMac miniに入れてAIエージェントのローカルLLMにした話</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/144/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T23:51:05.000Z</news:publication_date>
+      <news:title>Excel用ChatGPT</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/149/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T20:00:00.000Z</news:publication_date>
+      <news:title>ChatGPTやGeminiからClaudeへカンタンに移行できる？　新しい「メモリインポート機能」を試してみた</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/150/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T12:00:00.000Z</news:publication_date>
+      <news:title>無料でテクスチャ素材を生成できる「TextureCreate」</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/147/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T10:00:00.000Z</news:publication_date>
+      <news:title>GPT-5.4 シンキング・システムカード（公式技術文書）</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/148/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T07:58:31.000Z</news:publication_date>
+      <news:title>GoogleドキュメントでのGemini AI活用法：実用プロンプト付き完全ガイド</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/127/</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-06T02:20:00.000Z</news:publication_date>
+      <news:title>OpenAIが「GPT-5.4」をリリース、人間より上手にPCを操作できる「エージェント性能に優れた最も有能で効率的なフロンティアモデル」</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/128/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T23:45:01.000Z</news:publication_date>
+      <news:title>実験的機能のAgent Teamsを7回回して組み上げた個人開発フロー</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/133/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T23:30:54.000Z</news:publication_date>
+      <news:title>Claude障害時にやったたった1つのこと</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/124/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T21:34:00.000Z</news:publication_date>
+      <news:title>OpenAI、「GPT-5.4」リリース　PC操作のネイティブ対応、思考の途中変更も可能に</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/129/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T20:10:07.000Z</news:publication_date>
+      <news:title>Claude Code の ultrathink が帰ってきた！どれだけ差が出るか実測してみた</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/130/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T18:11:20.000Z</news:publication_date>
+      <news:title>【2026年版】OpenRouterの代替サービス7選：AI APIゲートウェイ徹底比較</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/123/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T18:00:15.000Z</news:publication_date>
+      <news:title>OpenAIがGPT-5.4をローンチ：ProとThinkingの2バージョンを展開</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/122/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T18:00:00.000Z</news:publication_date>
+      <news:title>OpenAI、PC操作が可能な自律エージェント型モデル「GPT-5.4」を発表</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/131/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T17:00:00.000Z</news:publication_date>
+      <news:title>CursorがAI自動化エージェント機能「Automations」を導入</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/132/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T15:35:40.000Z</news:publication_date>
+      <news:title>Google Workspaceをコマンドラインで操作する「gws」、Googleがオープンソースで公開。Agent Skillsファイルも提供し、AIエージェントによる適切な操作実現</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/120/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T12:33:21.000Z</news:publication_date>
+      <news:title>Yojo（養生）パターン — AI コーダーにシャドーマスクをつける ～時間とトークンの浪費をストップ～</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/112/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T11:44:09.000Z</news:publication_date>
+      <news:title>Claude Codeに時間感覚を与える — たった3行で実現するタイムスタンプ注入</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/113/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T11:22:41.000Z</news:publication_date>
+      <news:title>/insight で CLAUDE.md を育てるフィードバックループを作ってみた</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/114/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T10:13:52.000Z</news:publication_date>
+      <news:title>初めてのClaude Codeセットアップ</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/121/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T10:00:00.000Z</news:publication_date>
+      <news:title>GPT-5.4の発表：コーディング、コンピュータ操作、100万トークン対応の最強モデル</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/115/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T09:24:46.000Z</news:publication_date>
+      <news:title>Claude Codeだけで4つのSaaS事業を同時に回してる話</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/116/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T08:56:45.000Z</news:publication_date>
+      <news:title>Claude Codeで日常業務を爆速化する実践テクニック——.mdファイル活用から並列処理まで</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/117/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T08:11:01.000Z</news:publication_date>
+      <news:title>ClaudeCodeで資産バリュー株投資をしてみる</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/125/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T07:38:00.000Z</news:publication_date>
+      <news:title>Claude Codeに「オートモード」登場　承認作業をAIで自動化</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/118/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T07:31:32.000Z</news:publication_date>
+      <news:title>完全無料で毎朝AIニュースをDiscordに自動配信する「AI朝刊Bot」をGoogle Apps ScriptとGroq APIで作った</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/126/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T06:00:00.000Z</news:publication_date>
+      <news:title>Claude Code×Opus 4.6で実現、1人で回せるAI開発チームの作り方</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/119/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T02:25:54.000Z</news:publication_date>
+      <news:title>Claude Codeの運用プラクティス：設定・指示・改善ループを整理する</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/111/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T01:26:00.000Z</news:publication_date>
+      <news:title>OpenAI、「Codex」のWindows版もリリース</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/136/</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-06T02:25:00.000Z</news:publication_date>
+      <news:title>GoogleのAI情報収集ツール「NotebookLM」でノートの内容を動画にまとめる「ビデオ概要」機能が進化</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/134/</loc>
+    <lastmod>2026-03-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-06T02:07:00.000Z</news:publication_date>
+      <news:title>ローカルで動作する動画生成AI「LTX-2.3」が登場＆無料のPCアプリ「LTX Desktop」も公開される</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/135/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T18:11:36.000Z</news:publication_date>
+      <news:title>Lumaが「Unified Intelligence」搭載のクリエイティブAIエージェントをリリース</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/139/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T13:44:22.000Z</news:publication_date>
+      <news:title>Claude Codeから Coworkへ AIエージェントは非エンジニアの立場を向上させ、古い思考エンジニアを駆逐する</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/140/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T12:00:02.000Z</news:publication_date>
+      <news:title>日本語プロンプトで損していた——トークン効率と推論空間から見直す言語戦略</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/137/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T16:37:37.000Z</news:publication_date>
+      <news:title>Google Sheets × GAS で AI記事の承認パイプラインを作る</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/138/</loc>
+    <lastmod>2026-03-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-05T16:37:36.000Z</news:publication_date>
+      <news:title>Gemini APIが架空の論文を書いた。架空出典検出と薬機法チェックの実装</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/91/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T11:32:42.000Z</news:publication_date>
+      <news:title>NotebookLMが調査資料を「シネマティックな動画」で要約可能に</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/107/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T10:46:41.000Z</news:publication_date>
+      <news:title>Claude vs GPT-4o vs Gemini 2.0: 2026年仕事に使うAIモデル選び方ガイド</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/101/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T09:50:58.000Z</news:publication_date>
+      <news:title>Google検索、Geminiの「Canvas」機能を全米のAIモードユーザーに提供開始</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/102/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T08:18:14.000Z</news:publication_date>
+      <news:title>Claude Code を「指示待ち」から「提案型パートナー」に変えた 9 行のプロンプト</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/99/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T07:34:39.000Z</news:publication_date>
+      <news:title>【週刊ITニュース】AIが産業・雇用・市場を一変させた1週間（2026年3月第1週）</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/103/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T05:44:24.000Z</news:publication_date>
+      <news:title>【無料】5秒の音声でボイスクローン Qwen3-TTSをGoogle Colabで動かす方法</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/92/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T04:08:17.000Z</news:publication_date>
+      <news:title>RaycastのGlazeはオールインワンのバイブコーディング・アプリ基盤</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/104/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T03:49:13.000Z</news:publication_date>
+      <news:title>アプリを作ったはいいものの誰にも使われなかったときに読む記事</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/100/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T03:01:01.000Z</news:publication_date>
+      <news:title>プロンプトエンジニアリング ? RAG ? Skills ? MCP ? コンテキストエンジニアリング ? - 全然わからん！</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/105/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T02:46:44.000Z</news:publication_date>
+      <news:title>Claude Codeの /voice って何？コードをしゃべって書く時代がきた</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/96/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T02:02:01.000Z</news:publication_date>
+      <news:title>Claude Codeの /batch って何？大規模なコード変更を並列で自動化するスキル</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/97/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T01:02:35.000Z</news:publication_date>
+      <news:title>【毎日更新】主要AIエージェント比較まとめ：料金・特徴・ユースケース一覧</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/98/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-03T23:55:51.000Z</news:publication_date>
+      <news:title>Codex の作業を Claude Code に引き継がせる /takeover</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/94/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-03T18:12:43.000Z</news:publication_date>
+      <news:title>Gemini 3.1 Flash-Lite：高速・軽量な新モデルが登場</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/95/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-03T15:11:00.000Z</news:publication_date>
+      <news:title>OpenAI、不自然な回答やお節介な前置きを排した「GPT-5.3 Instant」公開</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/93/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-03T15:00:00.000Z</news:publication_date>
+      <news:title>GPT-5.3 InstantとGemini 3.1 Flash-Liteの登場、Anthropicの急成長</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/106/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-03T15:00:00.000Z</news:publication_date>
+      <news:title>MCP最新動向2026 — AAIF設立・gRPC対応・MCP Appsを全解説</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/108/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T09:57:01.000Z</news:publication_date>
+      <news:title>GoogleのAI搭載ワークスペース「Canvas」が検索画面から利用可能に</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/109/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T05:00:00.000Z</news:publication_date>
+      <news:title>信頼性を「AIの合議制」で実現！複数LLMを横断比較するCollectivIQが登場</news:title>
+    </news:news>
+  </url>
+  <url>
+    <loc>https://hinakira.com/ai-news/articles/110/</loc>
+    <lastmod>2026-03-04</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <news:news>
+      <news:publication>
+        <news:name>Hinakira AI News</news:name>
+        <news:language>ja</news:language>
+      </news:publication>
+      <news:publication_date>2026-03-04T01:00:00.000Z</news:publication_date>
+      <news:title>アルトマン氏、OpenAIの国防総省との契約による波紋に直面：MJでのサムネイル作成術も</news:title>
+    </news:news>
   </url>
 </urlset>

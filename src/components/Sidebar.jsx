@@ -23,6 +23,8 @@ export default function Sidebar({
   searchQuery,
   onSearch,
   total,
+  dateTotal,
+  totalAllArticles,
   className = '',
 }) {
   const totalCount = Object.values(categoryCounts || {}).reduce((a, b) => a + b, 0);
@@ -122,8 +124,10 @@ export default function Sidebar({
 
       {/* 統計 */}
       <div className="bg-gradient-to-br from-[#4a5a7a] to-[#3a4a68] rounded-xl shadow-sm p-4 text-center">
-        <div className="text-3xl font-bold text-white">{total}</div>
-        <div className="text-[11px] text-[#c4a0a0] uppercase tracking-wide mt-0.5">articles</div>
+        <div className="text-2xl font-bold text-white">{dateTotal || total}<span className="text-base font-medium ml-0.5">記事</span></div>
+        {totalAllArticles > 0 && (
+          <div className="text-[11px] text-[#a0b4c4] mt-1">/ 全 {totalAllArticles} 記事</div>
+        )}
       </div>
     </aside>
   );

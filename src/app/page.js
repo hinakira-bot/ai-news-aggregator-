@@ -14,12 +14,16 @@ export default function Home() {
     if (latestDate) {
       const datePath = path.join(process.cwd(), 'public', 'data', 'dates', `${latestDate}.json`);
       const dateData = JSON.parse(fs.readFileSync(datePath, 'utf-8'));
+      // 全日付の記事数合計
+      const totalAllArticles = indexJson.totalArticles
+        || Object.values(indexJson.dateCounts || {}).reduce((a, b) => a + b, 0);
       initialData = {
         articles: dateData.articles,
         total: dateData.total,
         categories: dateData.categories,
         availableDates: indexJson.dates.map(d => ({ date: d, count: indexJson.dateCounts[d] || 0 })),
         date: latestDate,
+        totalAllArticles,
       };
     }
   } catch (e) {

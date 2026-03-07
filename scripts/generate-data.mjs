@@ -78,6 +78,7 @@ async function main() {
   const indexData = {
     dates: dateList,
     dateCounts,
+    totalArticles,
     generatedAt: new Date().toISOString(),
   };
   fs.writeFileSync(path.join(DATA_DIR, 'index.json'), JSON.stringify(indexData));
