@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { getArticles, getAvailableDates } from '../src/lib/db.js';
+import { getArticles, getAvailableDates, getPickupArticle } from '../src/lib/db.js';
 
 const DATA_DIR = path.join(process.cwd(), 'public', 'data');
 const DATES_DIR = path.join(DATA_DIR, 'dates');
@@ -97,6 +97,18 @@ async function main() {
     path.join(DATA_DIR, 'all-ids.json'),
     JSON.stringify(allArticleIds)
   );
+
+  // pickup.json（最新のis_pick=true記事をDBから直接取得）
+  const pickupArticle = await getPickupArticle();
+  if (pickupArticle) {
+    fs.writeFileSync(
+      path.join(DATA_DIR, 'pickup.json'),
+      JSON.stringify(pickupArticle)
+    );
+    console.log(`  pickup.json: "${pickupArticle.title}"`);
+  } else {
+    console.log('  pickup.json: No pickup article found');
+  }
 
   // sitemap.xml 生成
   const SITE_URL = 'https://hinakira.com/ai-news';

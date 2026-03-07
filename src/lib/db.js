@@ -145,6 +145,17 @@ export async function getRecentArticlesByCategory(category, daysBack = 7, limit 
   return result;
 }
 
+export async function getPickupArticle() {
+  const sql = getDb();
+  const result = await sql`
+    SELECT * FROM articles
+    WHERE is_pick = true
+    ORDER BY collected_at DESC
+    LIMIT 1
+  `;
+  return result.length > 0 ? result[0] : null;
+}
+
 export async function getAvailableDates(limit = 30) {
   const sql = getDb();
   const result = await sql`
