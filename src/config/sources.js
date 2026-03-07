@@ -81,6 +81,32 @@ export const RSS_SOURCES = [
     priority: 'medium',
   },
 
+  // === 海外（英語）- メディア追加 ===
+  {
+    name: 'Ars Technica AI',
+    url: 'https://arstechnica.com/tag/ai/feed/',
+    lang: 'en',
+    priority: 'high',
+  },
+  {
+    name: 'MIT Technology Review',
+    url: 'https://www.technologyreview.com/feed/',
+    lang: 'en',
+    priority: 'high',
+  },
+  {
+    name: 'VentureBeat AI',
+    url: 'https://venturebeat.com/category/ai/feed/',
+    lang: 'en',
+    priority: 'high',
+  },
+  {
+    name: 'Wired AI',
+    url: 'https://www.wired.com/feed/tag/ai/latest/rss',
+    lang: 'en',
+    priority: 'medium',
+  },
+
   // === 日本語 ===
   {
     name: 'ITmedia AI+',
@@ -110,12 +136,6 @@ export const RSS_SOURCES = [
     name: 'Zenn AI',
     url: 'https://zenn.dev/topics/ai/feed',
     lang: 'ja',
-    priority: 'high',
-  },
-  {
-    name: 'Zenn LLM',
-    url: 'https://zenn.dev/topics/llm/feed',
-    lang: 'ja',
     priority: 'medium',
   },
   {
@@ -125,13 +145,6 @@ export const RSS_SOURCES = [
     priority: 'medium',
   },
 
-  // === 論文（優先度低：個人に実用的なもののみ選ばれる） ===
-  {
-    name: 'arXiv NLP/LLM',
-    url: 'https://arxiv.org/rss/cs.CL',
-    lang: 'en',
-    priority: 'low',
-  },
 ];
 
 export const NEWSAPI_CONFIG = {
