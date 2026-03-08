@@ -45,10 +45,28 @@ async function main() {
   const excludedCount = uniqueArticles.length - scoredArticles.length;
   console.log(`${scoredArticles.length} articles scored, ${excludedCount} excluded (relevance=0)`);
 
-  // Stage 1 結果をソートして上位候補を選出
+  // ソースタイプ別の内訳をログ出力
+  const typeBreakdown = {};
+  for (const a of scoredArticles) {
+    const t = a.sourceType || 'unknown';
+    typeBreakdown[t] = (typeBreakdown[t] || 0) + 1;
+  }
+  console.log(`  Source type breakdown after scoring: ${JSON.stringify(typeBreakdown)}`);
+
+  // 公式/メディアソースにスコアボーナス（+2）を付与して上位候補に入りやすくする
+  const OFFICIAL_MEDIA_BONUS = 2;
+  for (const article of scoredArticles) {
+    if (['official', 'media'].includes(article.sourceType)) {
+      article.effectiveScore = (article.relevanceScore || 0) + OFFICIAL_MEDIA_BONUS;
+    } else {
+      article.effectiveScore = article.relevanceScore || 0;
+    }
+  }
+
+  // Stage 1 結果をソートして上位候補を選出（effectiveScore順）
   const importanceOrder = { high: 0, medium: 1, low: 2 };
   const sorted = scoredArticles.sort((a, b) => {
-    if (b.relevanceScore !== a.relevanceScore) return b.relevanceScore - a.relevanceScore;
+    if (b.effectiveScore !== a.effectiveScore) return b.effectiveScore - a.effectiveScore;
     return (importanceOrder[a.importance] || 1) - (importanceOrder[b.importance] || 1);
   });
   const candidates = sorted.slice(0, TOP_CANDIDATES);

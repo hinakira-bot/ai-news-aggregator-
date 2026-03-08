@@ -98,6 +98,7 @@ async function fetchNewsApi() {
           url: item.url.trim(),
           sourceName: item.source?.name || 'NewsAPI',
           sourceLang: queryConfig.language,
+          sourceType: 'media', // NewsAPIはメディア記事が中心
           publishedAt: item.publishedAt ? new Date(item.publishedAt) : new Date(),
           description: item.description || '',
           thumbnailUrl: item.urlToImage || null,

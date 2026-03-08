@@ -15,8 +15,8 @@ export const RSS_SOURCES = [
     priority: 'high',
   },
   {
-    name: 'Anthropic Blog',
-    url: 'https://www.anthropic.com/blog/rss.xml',
+    name: 'Anthropic News',
+    url: 'https://raw.githubusercontent.com/taobojlen/anthropic-rss-feed/main/anthropic_news_rss.xml',
     lang: 'en',
     type: 'official',
     priority: 'high',
