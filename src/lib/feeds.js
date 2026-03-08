@@ -55,6 +55,7 @@ async function fetchRssFeed(source) {
         url: item.link.trim(),
         sourceName: source.name,
         sourceLang: source.lang,
+        sourceType: source.type || 'individual',
         publishedAt: item.pubDate ? new Date(item.pubDate) : now,
         description: item.contentSnippet || item.content || '',
         thumbnailUrl: extractThumbnail(item),

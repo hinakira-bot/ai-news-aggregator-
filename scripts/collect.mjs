@@ -8,6 +8,7 @@ const MAX_ARTICLES_PER_DAY = 10;
 const TOP_CANDIDATES = 20; // Stage 2 に進める候補数
 const MAX_PER_SOURCE = 3;  // 1ソースあたりの最大記事数
 const MAX_PER_TOPIC = 2;   // 同一トピックの最大記事数
+const MIN_OFFICIAL_MEDIA = 5; // 公式・メディアの最低確保枠（10記事中5記事以上）
 
 async function main() {
   console.log('=== Hinakira AI News - Collection Started ===');
@@ -88,42 +89,65 @@ async function main() {
   const enrichedArticles = await enrichArticles(candidates, historicalContext);
   console.log(`${enrichedArticles.length} articles fully enriched`);
 
-  // === 最終選出: 上位10件（ソース・トピック多様性を考慮） ===
+  // === 最終選出: 上位10件（ソース・トピック多様性 + 公式/メディア枠確保） ===
   console.log('');
-  console.log('=== Final Selection (with diversity check) ===');
+  console.log('=== Final Selection (with diversity + source type balance) ===');
   const finalSorted = enrichedArticles.sort((a, b) => {
     if (b.relevanceScore !== a.relevanceScore) return b.relevanceScore - a.relevanceScore;
     return (importanceOrder[a.importance] || 1) - (importanceOrder[b.importance] || 1);
   });
 
-  // ソース制限 + トピック制限付き選出
+  // ソースタイプ別に分類
+  const isOfficialOrMedia = (a) => ['official', 'media'].includes(a.sourceType);
+  const officialMediaPool = finalSorted.filter(isOfficialOrMedia);
+  const otherPool = finalSorted.filter(a => !isOfficialOrMedia(a));
+
+  console.log(`  Source type breakdown: official/media=${officialMediaPool.length}, individual/ugc=${otherPool.length}`);
+
+  // 選出ヘルパー
   const topArticles = [];
-  const sourceCount = {};  // ソースごとのカウント
-  const topicCount = {};   // トピックごとのカウント
+  const sourceCount = {};
+  const topicCount = {};
   const skippedSource = [];
   const skippedTopic = [];
 
-  for (const article of finalSorted) {
-    if (topArticles.length >= MAX_ARTICLES_PER_DAY) break;
-
+  function tryAdd(article) {
     const source = article.sourceName || 'unknown';
     const topic = article.topicId || `unique-${topArticles.length}`;
 
-    // ソース制限チェック
     if ((sourceCount[source] || 0) >= MAX_PER_SOURCE) {
       skippedSource.push(`${article.title} (${source})`);
-      continue;
+      return false;
     }
-
-    // トピック制限チェック
     if ((topicCount[topic] || 0) >= MAX_PER_TOPIC) {
       skippedTopic.push(`${article.title} (topic: ${topic})`);
-      continue;
+      return false;
     }
 
     topArticles.push(article);
     sourceCount[source] = (sourceCount[source] || 0) + 1;
     topicCount[topic] = (topicCount[topic] || 0) + 1;
+    return true;
+  }
+
+  // Phase 1: 公式/メディアから最低枠を確保
+  const addedIds = new Set();
+  for (const article of officialMediaPool) {
+    if (topArticles.length >= MIN_OFFICIAL_MEDIA) break;
+    if (tryAdd(article)) {
+      addedIds.add(article.url);
+    }
+  }
+  const officialCount = topArticles.length;
+  console.log(`  Phase 1: ${officialCount} official/media articles secured`);
+
+  // Phase 2: 残り枠をスコア順で埋める（全プールから）
+  for (const article of finalSorted) {
+    if (topArticles.length >= MAX_ARTICLES_PER_DAY) break;
+    if (addedIds.has(article.url)) continue;
+    if (tryAdd(article)) {
+      addedIds.add(article.url);
+    }
   }
 
   // 1位の記事に★PickOf The Dayフラグ
@@ -131,7 +155,9 @@ async function main() {
     topArticles[0].isPick = true;
     console.log(`★ Pick of the Day: ${topArticles[0].title}`);
   }
-  console.log(`Selected top ${topArticles.length} articles (from ${enrichedArticles.length} candidates)`);
+  const finalOfficialMedia = topArticles.filter(isOfficialOrMedia).length;
+  const finalIndividual = topArticles.length - finalOfficialMedia;
+  console.log(`Selected top ${topArticles.length} articles (official/media: ${finalOfficialMedia}, individual/ugc: ${finalIndividual})`);
   if (skippedSource.length > 0) {
     console.log(`  Skipped by source limit (max ${MAX_PER_SOURCE}): ${skippedSource.length} articles`);
     skippedSource.forEach(s => console.log(`    - ${s}`));
